@@ -18,15 +18,20 @@ class ACTIONRPG_API UActionRPGActionComponent : public UActorComponent
 
 public:	
 	UActionRPGActionComponent();
+	//the container holds all currently active tags on this character. // e.g. status, stunned, Status.Sprinting
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tags)
 	FGameplayTagContainer ActiveGameplayTags;
 	
+	//Creates a new Action Instance and add it to the list. 
 	UFUNCTION(BlueprintCallable,Category=Actions)
 	void AddAction(TSubclassOf<UActionRPGAction> ActionClass);
 	
+	// Finds an action by 'ActionName' and tries to start it 
 	UFUNCTION(BlueprintCallable,Category=Actions)
 	bool StartActionByName(AActor*Instigator,FName ActionName);
 	
+	// Finds an action by 'ActionName' and tries to stop it 
 	UFUNCTION(BlueprintCallable,Category=Actions)
 	bool StopActionByName(AActor*Instigator,FName ActionName);
 	
@@ -34,9 +39,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
+	// the list of instantiated Action Object.
 	UPROPERTY()
 	TArray<UActionRPGAction*> Actions;
 	
+	// These get converted into real objects in BeginPlay
 	UPROPERTY(EditAnywhere,Category=Actions)
 	TArray<TSubclassOf<UActionRPGAction>> DefaultActions;
 	
