@@ -45,12 +45,42 @@ void UActionRPGActionComponent::AddAction(TSubclassOf<UActionRPGAction> ActionCl
 bool UActionRPGActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
 	UE_LOG(LogTemp,Log,TEXT("Starting new Action"));
+	// loop through all instantiated actions to find the one we want.
+	for (UActionRPGAction*Action : Actions)
+	{
+		if ( Action && Action->ActionName == ActionName)
+		{
+			// we found the action. check if it is allowed to run 
+			if (!Action->CanStart(Instigator))
+			{
+				FString FailedMsg = FString::Printf(TEXT("failed to run: %s"),*ActionName.ToString());
+				GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Red,FailedMsg);
+				continue;
+			}
+			// it's allowed! Run the Logic
+			Action->StartAction(Instigator);
+			return true;
+		}
+	}
 	return false;
 }
 
 bool UActionRPGActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 {
-	return true;
+	UE_LOG(LogTemp, Log, TEXT("Stopping mewo Action "));
+	for (UActionRPGAction*Action : Actions)
+	{
+		if (Action&&Action->ActionName == ActionName)
+		{
+			// can only stop it if it is running 
+			if (Action->IsRunning())
+			{
+				Action->StopAction(Instigator);
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 
