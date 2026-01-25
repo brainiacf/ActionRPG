@@ -1,27 +1,52 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ActionRPGProjectileBase.h"
 
-// Sets default values
+#include "Components/SphereComponent.h"
+#include "ActionRPGAttributeComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UObject/FastReferenceCollector.h"
+#include "GameFramework/Actor.h"
+
+
 AActionRPGProjectileBase::AActionRPGProjectileBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-}
-
-// Called when the game starts or when spawned
-void AActionRPGProjectileBase::BeginPlay()
-{
-	Super::BeginPlay();
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	SphereComponent->SetCollisionProfileName("Projectile");
+	RootComponent = SphereComponent;
 	
+	EffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EffectComp"));
+	EffectComponent->SetupAttachment(RootComponent);
+	
+	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
+	MovementComponent->bRotationFollowsVelocity = true;//controls whether each particle's rotation aligns with its velocity vector
+	MovementComponent->bInitialVelocityInLocalSpace = true; // defines which space the particle's initial velocity is interpreted in: true ini. vel. is relative to the emitter's local rotation and pos. false -> ini. vel. is in world space.
+	MovementComponent->ProjectileGravityScale = 0.0f;
+	MovementComponent->InitialSpeed = 6000.0f;
 }
 
-// Called every frame
-void AActionRPGProjectileBase::Tick(float DeltaTime)
+void AActionRPGProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
-	Super::Tick(DeltaTime);
-
+	Explode();
 }
 
+void AActionRPGProjectileBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	SphereComponent->SetCollisionProfileName(TEXT("Projectile"));
+	SphereComponent->SetNotifyRigidBodyCollision(true); //"Simulation generates Hit Events"
+	SphereComponent->SetGenerateOverlapEvents(false);
+}
+
+void AActionRPGProjectileBase::Explode_Implementation()
+{
+	// I think this is not the correct wat to initialize projectile also to destroy this// will work on optimization. 
+	
+	// check to make sure we aren't getting already being destroyed 
+	// adding ensure to see if we encounter this situation at all 
+	UGameplayStatics::SpawnEmitterAtLocation(this,ImpactVFX,GetActorLocation(),GetActorRotation());
+	Destroy();
+}

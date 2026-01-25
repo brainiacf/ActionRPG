@@ -30,7 +30,7 @@ AActionRPGCharacter::AActionRPGCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	//OrinetRotattionToMovement -> Moves the Character to face the direction they are moving in 
+	//Orient RotationToMovement -> Moves the Character to face the direction they are moving in 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f,500.0f,0.0f);
 	
@@ -144,25 +144,30 @@ void AActionRPGCharacter::Look(const FInputActionValue& Value)
 
 void AActionRPGCharacter::SprintStart(const FInputActionValue& Value)
 {
+	ActionComponent->StartActionByName(this,"Sprint");
 }
 
 void AActionRPGCharacter::SprintStop(const FInputActionValue& Value)
 {
+	ActionComponent->StopActionByName(this,"Sprint");
 }
 
 void AActionRPGCharacter::PrimaryAttack()
 {
 	if (GEngine){GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("Fire"));}
-	// ActionComponent-> StartActionByName
+	ActionComponent->StartActionByName(this,"PrimaryAttack");
+	
 	
 }
 
 void AActionRPGCharacter::BlackholeAttack()
 {
+	ActionComponent->StartActionByName(this,"BlackholeAttack");
 }
 
 void AActionRPGCharacter::Dash()
 {
+	ActionComponent->StartActionByName(this,"Dash");
 }
 
 void AActionRPGCharacter::PrimaryInteract()
@@ -172,6 +177,15 @@ void AActionRPGCharacter::PrimaryInteract()
 void AActionRPGCharacter::OnHealthChanged(AActor* InstigatorActor, UActionRPGAttributeComponent* OwningComp,
 	float NewHealth, float Delta)
 {
+	if (Delta<0.0f)
+	{
+		UE_LOG(LogTemp,Log,TEXT("Delta is less than 0 in OnHealthChanged ActionCharacter"));
+	}
+	if (NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		APlayerController*PC = Cast<APlayerController>(GetController());
+		DisableInput(PC);
+	}
 }
 
 FVector AActionRPGCharacter::GetPawnViewLocation() const

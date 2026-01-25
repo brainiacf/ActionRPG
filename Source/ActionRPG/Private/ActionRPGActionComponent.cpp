@@ -70,7 +70,7 @@ bool UActionRPGActionComponent::StopActionByName(AActor* Instigator, FName Actio
 	UE_LOG(LogTemp, Log, TEXT("Stopping mewo Action "));
 	for (UActionRPGAction*Action : Actions)
 	{
-		if (Action&&Action->ActionName == ActionName)
+		if (Action && Action->ActionName == ActionName)
 		{
 			// can only stop it if it is running 
 			if (Action->IsRunning())
