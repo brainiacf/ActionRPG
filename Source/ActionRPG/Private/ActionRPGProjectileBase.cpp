@@ -43,7 +43,7 @@ void AActionRPGProjectileBase::PostInitializeComponents()
 
 void AActionRPGProjectileBase::Explode_Implementation()
 {
-	// I think this is not the correct wat to initialize projectile also to destroy this// will work on optimization. 
+	// I think this is not the correct way to initialize projectile also to destroy this// will work on optimization. 
 	
 	// check to make sure we aren't getting already being destroyed 
 	// adding ensure to see if we encounter this situation at all 
