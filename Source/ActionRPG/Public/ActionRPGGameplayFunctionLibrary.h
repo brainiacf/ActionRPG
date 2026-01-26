@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -13,5 +12,12 @@ UCLASS()
 class ACTIONRPG_API UActionRPGGameplayFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+	
+public:	
+	UFUNCTION(BlueprintCallable,Category=Gameplay)
+	static bool ApplyDamage(AActor*DamageCauser,AActor*TargetActor,float DamageAmount);
+	
+	UFUNCTION(BlueprintCallable,Category=Gameplay)
+	static bool ApplyDirectionalDamage(AActor*DamageCauser,AActor*TargetActor,float DamageAmount,const FHitResult &HitResult);
 	
 };
