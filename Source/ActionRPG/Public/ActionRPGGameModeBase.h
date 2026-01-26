@@ -11,6 +11,7 @@
 
 class UEnvQuery;
 class UCurveFloat;
+class AController;
 
 UCLASS()
 class ACTIONRPG_API AActionRPGGameModeBase : public AGameModeBase
@@ -40,12 +41,15 @@ protected:
 	UFUNCTION()//UEnvQueryInstanceBlueprintWrapper is the bridge that allows Blueprints to handle the results of an Environment Query System (EQS) test.
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance,EEnvQueryStatus::Type QueryStatus);
 	
-	// GM does not do begin play cause it is respon. of calling BP on all the classes.
+	// GM does not do begin play cause it is responsible. of calling BP on all the classes.
 public:
 	
 	virtual void StartPlay() override;
 	
 	virtual void OnActorKilled(AActor*VictimActor,AActor*Killer);
+	
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController*Controller);
 	
 	UFUNCTION(Exec)
 	void KillAI();
