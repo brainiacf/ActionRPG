@@ -1,27 +1,49 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "ActionRPGPowerupActor.h"
 
-// Sets default values
+#include "Components/SphereComponent.h"
+
 AActionRPGPowerupActor::AActionRPGPowerupActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-}
-
-// Called when the game starts or when spawned
-void AActionRPGPowerupActor::BeginPlay()
-{
-	Super::BeginPlay();
+	//PrimaryActorTick.bCanEverTick = true;
 	
-}
+	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
+	SphereComponent->SetCollisionProfileName("PowerUp");
+	RootComponent = SphereComponent;
+	RespawnTime = 10.0f;
+	
 
-// Called every frame
-void AActionRPGPowerupActor::Tick(float DeltaTime)
+}
+void AActionRPGPowerupActor::PostInitializeComponents()
 {
-	Super::Tick(DeltaTime);
-
+	Super::PostInitializeComponents();
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnSphereOverlap);
 }
 
+
+void AActionRPGPowerupActor::Interact_Implementation(APawn* InstigatorPawn)
+{
+	//IActionRPGGameplayInterface::Interact_Implementation(InstigatorPawn);
+}
+
+void AActionRPGPowerupActor::ShowPowerUp()
+{
+	SetPowerupState(true);
+}
+
+void AActionRPGPowerupActor::HideAndCoolDownPowerUp()
+{
+	SetPowerupState(false);
+	GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer,this,&ThisClass::ShowPowerUp,RespawnTime);
+}
+
+void AActionRPGPowerupActor::SetPowerupState(bool bNewIsActive)
+{
+	SetActorEnableCollision(bNewIsActive);
+	RootComponent->SetVisibility(bNewIsActive,true);
+}
+void AActionRPGPowerupActor::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Execute_Interact(this,CastChecked<APawn>(OtherActor));
+}

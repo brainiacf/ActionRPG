@@ -1,26 +1,42 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ActionRPGGameplayInterface.h"
 #include "ActionRPGPowerupActor.generated.h"
 
+class USphereComponent;
+
 UCLASS()
-class ACTIONRPG_API AActionRPGPowerupActor : public AActor
+class ACTIONRPG_API AActionRPGPowerupActor : public AActor, public IActionRPGGameplayInterface
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
+
+public:
 	AActionRPGPowerupActor();
 
+	void Interact_Implementation(APawn* InstigatorPawn) override;
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(EditDefaultsOnly, Category=PowerUp)
+	float RespawnTime;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	FTimerHandle TimerHandle_RespawnTimer;
 
+	UFUNCTION()
+	void ShowPowerUp();
+
+	void HideAndCoolDownPowerUp();
+
+	void SetPowerupState(bool bNewIsActive);
+
+	UPROPERTY(VisibleAnywhere, Category = Components)
+	TObjectPtr<USphereComponent> SphereComponent;
+
+	UFUNCTION()
+	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                     UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep,
+	                     const FHitResult& SweepResult);
+
+	virtual void PostInitializeComponents() override;
 };
