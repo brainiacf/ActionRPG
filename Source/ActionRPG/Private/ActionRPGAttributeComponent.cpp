@@ -4,6 +4,7 @@
 // console variable to manipulate Damage while the game is running, Use .GetValueOnGameThread() to get the var
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplier"),1.0f,TEXT("MultiplyDamage"),ECVF_Cheat);
 
+//helper function -> to quickly get the Attribute Component from Any actor  
 UActionRPGAttributeComponent* UActionRPGAttributeComponent::GetAttributes(AActor* FromActor)
 {
 	if (FromActor) {return Cast<UActionRPGAttributeComponent>(FromActor->GetComponentByClass(UActionRPGAttributeComponent::StaticClass()));}
