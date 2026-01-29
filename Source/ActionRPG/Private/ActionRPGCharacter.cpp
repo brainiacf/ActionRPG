@@ -72,7 +72,8 @@ void AActionRPGCharacter::Tick(float DeltaTime)
 void AActionRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	if (APlayerController* PC = Cast<APlayerController>(PlayerInputComponent->GetOwner()))
+	UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent called!"));
+	if (APlayerController* PC = Cast<APlayerController>(GetController()) )
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem =ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 		{
@@ -102,7 +103,7 @@ void AActionRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow,TEXT("failed to fine EIC. character input setup problem"));
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow,TEXT("failed to find EIC. character input setup problem"));
 		}
 	}
 
