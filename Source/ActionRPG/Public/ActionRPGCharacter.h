@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "GameFramework/Pawn.h"
 #include "ActionRPGCharacter.generated.h"
 
 class USpringArmComponent;
@@ -112,6 +113,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual void NotifyControllerChanged() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;

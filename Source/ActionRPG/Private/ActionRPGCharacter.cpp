@@ -63,6 +63,22 @@ void AActionRPGCharacter::PostInitializeComponents()
 	AttributeComponent->OnHealthChange.AddDynamic(this,&AActionRPGCharacter::OnHealthChanged);
 }
 
+void AActionRPGCharacter::NotifyControllerChanged()
+{
+	Super::NotifyControllerChanged();
+	// Add input Mapping Context
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			//Clear Old Mapping to prevent duplicates if possesion changes
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(InputMappingContext,0);
+		}
+	}
+}
+
 void AActionRPGCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -73,13 +89,7 @@ void AActionRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent called!"));
-	if (APlayerController* PC = Cast<APlayerController>(GetController()) )
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem =ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(InputMappingContext,0);	
-		}
-	}
+
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ACharacter::Jump);
