@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -6,6 +5,8 @@
 #include "ActionRPGAICharacter.generated.h"
 
 class UPawnSensingComponent;
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
 class UActionRPGAttributeComponent;
 class UUserWidget;
 class UActionRPGWorldUserWidget;
@@ -21,43 +22,43 @@ public:
 	AActionRPGAICharacter();
 
 protected:
-	UPROPERTY(VisibleAnywhere,Category=Components)
-	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
-	
-	UPROPERTY(EditDefaultsOnly,Category=UI)
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TObjectPtr<UAIPerceptionComponent> AIPerceptionComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TObjectPtr<UAISenseConfig_Sight> SightConfig;
+
+
+	UPROPERTY(EditDefaultsOnly, Category=UI)
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
-	
-	UPROPERTY(EditDefaultsOnly,Category=UI)
+
+	UPROPERTY(EditDefaultsOnly, Category=UI)
 	TObjectPtr<UActionRPGWorldUserWidget> ActiveHealthBar;
-	
-	UPROPERTY(EditDefaultsOnly,Category=Action)
+
+	UPROPERTY(EditDefaultsOnly, Category=Action)
 	TObjectPtr<UActionRPGActionComponent> ActionComponent;
-	
-	UPROPERTY(VisibleAnywhere,Category=Effects)
+
+	UPROPERTY(VisibleAnywhere, Category=Effects)
 	FName TimeToHitParameterName;
-	
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category=Components,meta=(AllowPrivateAccess=true))
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Components, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UActionRPGAttributeComponent> AttributeComponent;
-	
+
 	//func.
-	
+
 	void SetTargetActor(AActor* NewTarget);
-	
 	UFUNCTION()
-	void OnPawnSeen(APawn *Pawn);
-	
+	void OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus);
+
 	UFUNCTION()
-	void OnHealthChange(AActor *InstigatorActor, UActionRPGAttributeComponent *OwningComp, float NewHealth, float Delta);
-	
+	void OnPawnSeen(APawn* Pawn);
+
+	UFUNCTION()
+	void OnHealthChange(AActor* InstigatorActor, UActionRPGAttributeComponent* OwningComp, float NewHealth,
+	                    float Delta);
+
 	void IsAlive();
-	
-	
-	
-	
-	
+
 protected:
 	virtual void PostInitializeComponents() override;
-
-
-
 };

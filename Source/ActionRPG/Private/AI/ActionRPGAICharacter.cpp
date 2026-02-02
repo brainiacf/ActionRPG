@@ -2,7 +2,8 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Perception/PawnSensingComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "DrawDebugHelpers.h"
 #include "ActionRPGAttributeComponent.h"
 #include "BrainComponent.h"
@@ -16,8 +17,22 @@
 AActionRPGAICharacter::AActionRPGAICharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AIPerceptionComp =CreateDefaultSubobject<UAIPerceptionComponent>("AIPerceptionComponent");
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>("SightConfig");
+	
+	SightConfig->SightRadius = 1000.0f;
+	SightConfig->LoseSightRadius = 1200.0f;
+	SightConfig->PeripheralVisionAngleDegrees = 60.0f;
+	SightConfig->SetMaxAge(5.0f);
+	
+	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+	
+	AIPerceptionComp->ConfigureSense(*SightConfig);
+	AIPerceptionComp->SetDominantSense(SightConfig->GetSenseImplementation());
+	
 	//At
 	AttributeComponent = CreateDefaultSubobject<UActionRPGAttributeComponent>("AttributeComponent");
 	TimeToHitParameterName = "TimeToHit";
@@ -30,7 +45,8 @@ AActionRPGAICharacter::AActionRPGAICharacter()
 void AActionRPGAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	PawnSensingComponent->OnSeePawn.AddDynamic(this,&ThisClass::OnPawnSeen);
+	AIPerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this
+		,&AActionRPGAICharacter::OnTargetPerceived);
 	AttributeComponent->OnHealthChange.AddDynamic(this,&ThisClass::OnHealthChange);
 }
 
@@ -47,11 +63,23 @@ void AActionRPGAICharacter::SetTargetActor(AActor* NewTarget)
 	if (AIC)
 	{
 		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor",NewTarget);
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Black,(TEXT("AIC is false mkc")));
 	}
 }
 
+void AActionRPGAICharacter::OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus)
+{
+
+	if (Stimulus.WasSuccessfullySensed())
+	{
+		SetTargetActor(Actor);
+		DrawDebugString(GetWorld(), GetActorLocation(), "PlayerSpotted", nullptr, FColor::Green, 4.0f, true);
+	}
+	
+}
+
 void AActionRPGAICharacter::OnHealthChange(AActor* InstigatorActor, UActionRPGAttributeComponent* OwningComp,
-	float NewHealth, float Delta)
+                                           float NewHealth, float Delta)
 {
 	if (Delta < 0)
 	{

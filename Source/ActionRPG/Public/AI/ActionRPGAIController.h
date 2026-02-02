@@ -13,7 +13,7 @@ class ACTIONRPG_API AActionRPGAIController : public AAIController
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditDefaultsOnly,Category=AI)
+	UPROPERTY(EditAnywhere,Category=AI)
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 	
 public:
