@@ -39,6 +39,7 @@ void AActionRPGProjectileBase::PostInitializeComponents()
 	SphereComponent->SetCollisionProfileName(TEXT("Projectile"));
 	SphereComponent->SetNotifyRigidBodyCollision(true); //"Simulation generates Hit Events"
 	SphereComponent->SetGenerateOverlapEvents(false);
+	SphereComponent->OnComponentHit.AddDynamic(this,&ThisClass::OnActorHit);
 }
 
 void AActionRPGProjectileBase::Explode_Implementation()
