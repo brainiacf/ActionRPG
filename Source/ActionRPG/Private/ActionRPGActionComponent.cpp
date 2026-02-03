@@ -22,7 +22,7 @@ void UActionRPGActionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	FString DebugMsg = GetNameSafe(GetOwner()) + ":" +ActiveGameplayTags.ToStringSimple();
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Green,DebugMsg);
+		//GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Green,DebugMsg);
 	}
 
 }
@@ -54,7 +54,7 @@ bool UActionRPGActionComponent::StartActionByName(AActor* Instigator, FName Acti
 			if (!Action->CanStart(Instigator))
 			{
 				FString FailedMsg = FString::Printf(TEXT("failed to run: %s"),*ActionName.ToString());
-				GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Red,FailedMsg);
+				//GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Red,FailedMsg);
 				continue;
 			}
 			// it's allowed! Run the Logic

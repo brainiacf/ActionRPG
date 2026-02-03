@@ -17,14 +17,20 @@ AActionRPGMagicProjectile::AActionRPGMagicProjectile()
 	
 }
 
-void AActionRPGMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)
+void AActionRPGMagicProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnActorOverlap);
+}
+
+void AActionRPGMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage(5,5.0,FColor::Green,TEXT("Hit Damage"));
-	Super::OnActorHit(HitComponent, OtherActor, OtherComponent, NormalImpulse, HitResult);
-
 	if (OtherActor && OtherActor != GetInstigator())
 	{
+		
+		
 		UActionRPGActionComponent* ActionComponent = Cast<UActionRPGActionComponent>(OtherActor->GetComponentByClass(UActionRPGActionComponent::StaticClass()));
 		if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag))
 		{
@@ -32,11 +38,20 @@ void AActionRPGMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AA
 			SetInstigator(Cast<APawn>(OtherActor));
 			return;
 		}
-		if (UActionRPGGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(),OtherActor,DamageAmount,HitResult))
+		if (UActionRPGGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(),OtherActor,DamageAmount,SweepResult))
 		{
 			Explode();
 		}
 	}
+}
+
+void AActionRPGMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+                                           UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)
+{
+	
+	//Super::OnActorHit(HitComponent, OtherActor, OtherComponent, NormalImpulse, HitResult);
+
+	
 	
 }
 

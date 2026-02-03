@@ -113,7 +113,7 @@ void AActionRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow,TEXT("failed to find EIC. character input setup problem"));
+			//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow,TEXT("failed to find EIC. character input setup problem"));
 		}
 	}
 
@@ -165,7 +165,7 @@ void AActionRPGCharacter::SprintStop(const FInputActionValue& Value)
 
 void AActionRPGCharacter::PrimaryAttack()
 {
-	if (GEngine){GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("Fire"));}
+	//if (GEngine){GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("Fire"));}
 	ActionComponent->StartActionByName(this,"PrimaryAttack");
 	
 	

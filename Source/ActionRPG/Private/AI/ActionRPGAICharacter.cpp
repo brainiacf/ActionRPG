@@ -54,7 +54,7 @@ void AActionRPGAICharacter::SetTargetActor(AActor* NewTarget)
 	if (AIC)
 	{
 		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor",NewTarget);
-		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Black,(TEXT("AIC is false mkc")));
+		//GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Black,(TEXT("AIC is false mkc")));
 	}
 }
 

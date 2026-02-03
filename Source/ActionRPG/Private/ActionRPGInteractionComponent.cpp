@@ -56,7 +56,7 @@ void UActionRPGInteractionComponent::PrimaryInteract()
 		{
 			if (HitActor->Implements<UActionRPGGameplayInterface>())
 			{
-				GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("HitActor"));
+				//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("HitActor"));
 				APawn*MyPawn = Cast<APawn>(MyOwner);
 				IActionRPGGameplayInterface::Execute_Interact(HitActor,MyPawn);
 				break;

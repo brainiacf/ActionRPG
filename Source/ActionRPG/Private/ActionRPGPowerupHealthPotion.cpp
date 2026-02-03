@@ -28,6 +28,6 @@ void AActionRPGPowerupHealthPotion::Interact_Implementation(APawn* InstigatorPaw
 			HideAndCoolDownPowerUp();
 		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"PowerUp Actor Created");
+	//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"PowerUp Actor Created");
 
 }
