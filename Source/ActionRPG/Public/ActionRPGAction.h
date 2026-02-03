@@ -45,7 +45,7 @@ public:
 	void StartAction(AActor*Instigator);
 	
 	//Logic for cleaning up(removing effects, reseting vars ) when action ends;
-	UFUNCTION( BlueprintNativeEvent,Category=Action )
+	UFUNCTION( BlueprintCallable,BlueprintNativeEvent,Category=Action )
 	void StopAction(AActor*Instigator);
 	
 	//Custom override needed because UObject don't inherently know about the world
