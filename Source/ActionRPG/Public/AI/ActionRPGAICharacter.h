@@ -22,13 +22,10 @@ public:
 	AActionRPGAICharacter();
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	TObjectPtr<UAIPerceptionComponent> AIPerceptionComp;
-
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	TObjectPtr<UAISenseConfig_Sight> SightConfig;
-
-
+	
+	UPROPERTY(EditAnywhere,Category=Components)
+	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
+	
 	UPROPERTY(EditDefaultsOnly, Category=UI)
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
@@ -47,8 +44,7 @@ protected:
 	//func.
 
 	void SetTargetActor(AActor* NewTarget);
-	UFUNCTION()
-	void OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus);
+
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);

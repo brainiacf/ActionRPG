@@ -13,25 +13,16 @@
 #include "ActionRPGWorldUserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "ActionRPGActionComponent.h"
+#include "Perception/PawnSensingComponent.h"
 
 AActionRPGAICharacter::AActionRPGAICharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-	AIPerceptionComp =CreateDefaultSubobject<UAIPerceptionComponent>("AIPerceptionComponent");
-	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>("SightConfig");
 	
-	SightConfig->SightRadius = 1000.0f;
-	SightConfig->LoseSightRadius = 1200.0f;
-	SightConfig->PeripheralVisionAngleDegrees = 60.0f;
-	SightConfig->SetMaxAge(5.0f);
+	PawnSensingComponent= CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 	
-	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	
-	AIPerceptionComp->ConfigureSense(*SightConfig);
-	AIPerceptionComp->SetDominantSense(SightConfig->GetSenseImplementation());
 	
 	//At
 	AttributeComponent = CreateDefaultSubobject<UActionRPGAttributeComponent>("AttributeComponent");
@@ -45,8 +36,8 @@ AActionRPGAICharacter::AActionRPGAICharacter()
 void AActionRPGAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	AIPerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this
-		,&AActionRPGAICharacter::OnTargetPerceived);
+	PawnSensingComponent->OnSeePawn.AddDynamic(this,&ThisClass::OnPawnSeen);
+	
 	AttributeComponent->OnHealthChange.AddDynamic(this,&ThisClass::OnHealthChange);
 }
 
@@ -67,16 +58,7 @@ void AActionRPGAICharacter::SetTargetActor(AActor* NewTarget)
 	}
 }
 
-void AActionRPGAICharacter::OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus)
-{
 
-	if (Stimulus.WasSuccessfullySensed())
-	{
-		SetTargetActor(Actor);
-		DrawDebugString(GetWorld(), GetActorLocation(), "PlayerSpotted", nullptr, FColor::Green, 4.0f, true);
-	}
-	
-}
 
 void AActionRPGAICharacter::OnHealthChange(AActor* InstigatorActor, UActionRPGAttributeComponent* OwningComp,
                                            float NewHealth, float Delta)
