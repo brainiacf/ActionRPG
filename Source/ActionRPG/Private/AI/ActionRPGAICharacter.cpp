@@ -75,7 +75,9 @@ void AActionRPGAICharacter::OnHealthChange(AActor* InstigatorActor, UActionRPGAt
 			if (ActiveHealthBar)
 			{
 				ActiveHealthBar->AttachActor = this;
-				ActiveHealthBar->AddToViewport();
+				UActionRPGWorldUserWidget::AddToRootCanvasPanel(ActiveHealthBar);
+			
+				
 			}
 		}
 	}

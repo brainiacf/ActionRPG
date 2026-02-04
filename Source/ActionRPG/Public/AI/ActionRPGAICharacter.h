@@ -26,11 +26,13 @@ protected:
 	UPROPERTY(EditAnywhere,Category=Components)
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
 	
-	UPROPERTY(EditDefaultsOnly, Category=UI)
+	UPROPERTY(EditAnywhere, Category=UI)
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly, Category=UI)
+	UPROPERTY(Transient)
 	TObjectPtr<UActionRPGWorldUserWidget> ActiveHealthBar;
+	
+	
 
 	UPROPERTY(EditDefaultsOnly, Category=Action)
 	TObjectPtr<UActionRPGActionComponent> ActionComponent;
