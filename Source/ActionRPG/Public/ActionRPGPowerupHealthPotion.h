@@ -20,6 +20,8 @@ protected:
 	UPROPERTY(EditAnywhere,Category=HealthPotion)
 	TObjectPtr<UMeshComponent> MeshComponent;
 	
+	int32 CreditCost;
+	
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 	
 };

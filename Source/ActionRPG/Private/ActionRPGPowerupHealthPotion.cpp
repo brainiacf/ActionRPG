@@ -3,6 +3,7 @@
 #include "Components/MeshComponent.h"
 #include "ActionRPGAttributeComponent.h"
 #include "GameFramework/Pawn.h"
+#include "ActionRPGPlayerState.h"
 
 
 AActionRPGPowerupHealthPotion::AActionRPGPowerupHealthPotion()
@@ -10,6 +11,7 @@ AActionRPGPowerupHealthPotion::AActionRPGPowerupHealthPotion()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComponent->SetupAttachment(RootComponent);
+	CreditCost = 50;
 }
 
 void AActionRPGPowerupHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
@@ -23,9 +25,13 @@ void AActionRPGPowerupHealthPotion::Interact_Implementation(APawn* InstigatorPaw
 	
 	if (ensure(AttributeComponent)&& !AttributeComponent->IsFullHealth())
 	{
-		if (AttributeComponent->ApplyHealthChange(this,AttributeComponent->GetMaxHealth()))
+		if (AActionRPGPlayerState* PS = InstigatorPawn->GetPlayerState<AActionRPGPlayerState>())
 		{
-			HideAndCoolDownPowerUp();
+			if (PS->RemoveCredits(CreditCost) && AttributeComponent->ApplyHealthChange(this,AttributeComponent->GetMaxHealth()))
+			{
+				// OnlyActivateif healed 
+				HideAndCoolDownPowerUp();
+			}
 		}
 	}
 	//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"PowerUp Actor Created");
