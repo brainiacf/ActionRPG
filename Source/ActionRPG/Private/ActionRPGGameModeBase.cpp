@@ -92,7 +92,7 @@ void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryRe
 	TArray<FVector> UsedLocations;
 	int32 SpawnCounter = 0;
 	// Break out if we reached the desired count or if we have no more potential positions remaining
-	while (SpawnCounter < DesiredPowerupCount && Locations.Num()>0)
+	while (SpawnCounter < DesiredPowerupCount && Locations.Num()>0)//
 	{
 		// pick a random Index from remaining points.
 		int32 RandomLocationIndex = FMath::RandRange(0,Locations.Num()-1);
