@@ -83,20 +83,22 @@ void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryRe
 		UE_LOG(LogTemp,Warning,TEXT("Failed to spawn bot spawn"));
 		return;
 	}
-	// Retrieve all possible locations that passed the query
+	// Retrieve all possible locations where powerup instances could spawn 
 	TArray<FVector> Locations;
-	QueryResult->GetAllAsLocations(Locations);
+	
+	QueryResult->GetAllAsLocations(Locations); // Query result fills the Locations Array with the all valid spots
+	
 	// keep used locations to easily check distance between points
 	TArray<FVector> UsedLocations;
 	int32 SpawnCounter = 0;
 	// Break out if we reached the desired count or if we have no more potential positions remaining
 	while (SpawnCounter < DesiredPowerupCount && Locations.Num()>0)
 	{
-		// pick a randon location from remaining points.
+		// pick a random Index from remaining points.
 		int32 RandomLocationIndex = FMath::RandRange(0,Locations.Num()-1);
 		
 		FVector PickedLocation = Locations[RandomLocationIndex];
-		//remove to avoid picking again 
+		//remove the picked location so that it isnt processed twice 
 		Locations.RemoveAt(RandomLocationIndex);
 		//check minimum distance requirement
 		bool bValidLocation = true;
@@ -116,9 +118,10 @@ void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryRe
 		{
 			continue;
 		}
-		//
-		int32 RandonClassIndex = FMath::RandRange(0,PowerUpClasses.Num()-1);
-		TSubclassOf<AActor> RandomPowerupClass = PowerUpClasses[RandonClassIndex];
+		//pick random clas index from the PowerupClasses Arrays
+		int32 RandomClassIndex = FMath::RandRange(0,PowerUpClasses.Num()-1);
+		
+		TSubclassOf<AActor> RandomPowerupClass = PowerUpClasses[RandomClassIndex];
 		GetWorld()->SpawnActor<AActor>(RandomPowerupClass,PickedLocation,FRotator::ZeroRotator);
 		
 		// 
