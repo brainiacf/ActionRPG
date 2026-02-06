@@ -17,6 +17,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameStateBase.h"
 #include "Engine/AssetManager.h"
+#include "Logging/StructuredLog.h"
 
 
 
@@ -79,7 +80,50 @@ void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryRe
 	FEnvQueryResult* QueryResult = Result.Get();
 	if (!QueryResult->IsSuccessful())
 	{
-		UE_LOG(LogTemp,Warning,)
+		UE_LOG(LogTemp,Warning,TEXT("Failed to spawn bot spawn"));
+		return;
+	}
+	// Retrieve all possible locations that passed the query
+	TArray<FVector> Locations;
+	QueryResult->GetAllAsLocations(Locations);
+	// keep used locations to easily check distance between points
+	TArray<FVector> UsedLocations;
+	int32 SpawnCounter = 0;
+	// Break out if we reached the desired count or if we have no more potential positions remaining
+	while (SpawnCounter < DesiredPowerupCount && Locations.Num()>0)
+	{
+		// pick a randon location from remaining points.
+		int32 RandomLocationIndex = FMath::RandRange(0,Locations.Num()-1);
+		
+		FVector PickedLocation = Locations[RandomLocationIndex];
+		//remove to avoid picking again 
+		Locations.RemoveAt(RandomLocationIndex);
+		//check minimum distance requirement
+		bool bValidLocation = true;
+		for (FVector OtherLocation : UsedLocations)
+		{
+			float DistanceTo = (PickedLocation - OtherLocation).Size();
+			
+			if (DistanceTo < RequiredPowerUpDistance)
+			{
+				// show skiped location due to distance 
+				bValidLocation = false;
+				break;
+			}
+		}
+		// failed the distance Test 
+		if (!bValidLocation)
+		{
+			continue;
+		}
+		//
+		int32 RandonClassIndex = FMath::RandRange(0,PowerUpClasses.Num()-1);
+		TSubclassOf<AActor> RandomPowerupClass = PowerUpClasses[RandonClassIndex];
+		GetWorld()->SpawnActor<AActor>(RandomPowerupClass,PickedLocation,FRotator::ZeroRotator);
+		
+		// 
+		UsedLocations.Add(PickedLocation);
+		SpawnCounter++;
 	}
 }
 
