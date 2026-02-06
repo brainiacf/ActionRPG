@@ -30,7 +30,7 @@ void AActionRPGPowerupHealthPotion::Interact_Implementation(APawn* InstigatorPaw
 			if (PS->RemoveCredits(CreditCost) && AttributeComponent->ApplyHealthChange(this,AttributeComponent->GetMaxHealth()))
 			{
 				// OnlyActivateif healed 
-				HideAndCoolDownPowerUp();
+				HideAndCoolDownPowerUp(); 
 			}
 		}
 	}

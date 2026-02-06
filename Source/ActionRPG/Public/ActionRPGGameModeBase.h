@@ -20,6 +20,11 @@ class ACTIONRPG_API AActionRPGGameModeBase : public AGameModeBase
 	AActionRPGGameModeBase();
 	
 protected:
+	//credits
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category=AI)
+	int32 InitialSpawnCredits;
+	UPROPERTY(EditDefaultsOnly,Category=Credits)
+	int32 CreditsPerKill;
 	
 	FTimerHandle TimerHandle_SpawnBots;
 	
@@ -31,6 +36,24 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly,Category=AI)
 	TSubclassOf<AActor> MinionClass;
+	
+	//PowerUps
+	UPROPERTY(EditDefaultsOnly,Category=PowerUps)
+	TObjectPtr<UEnvQuery> PowerUpSpawnQuery;
+	
+	UPROPERTY(EditDefaultsOnly,Category=PowerUps)
+	TArray<TSubclassOf<AActor>> PowerUpClasses;
+	
+	UPROPERTY(EditDefaultsOnly,Category=PowerUp)
+	float RequiredPowerUpDistance;
+	
+	UPROPERTY(EditDefaultsOnly,Category=PowerUp)
+	int32 DesiredPowerupCount;
+	// Delegate (event handler) that executes automatically when an asynchronous EQS query finishes processing.
+	//TSharedPtr-> smart pointer that ensures the result data remains valid in memory while we use it.
+	//FEnvQueryResult-> data returned by the Query
+	//Bind this Function to FEnvQueryResult 
+	void OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
 	
 	UFUNCTION()
 	void SpawnBotTimerElapsed();

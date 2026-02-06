@@ -11,6 +11,14 @@
 #include "ActionRPGCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "EnvironmentQuery/EnvQuery.h"
+#include "ActionRPGPlayerState.h"
+#include "EngineUtils.h"
+#include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameStateBase.h"
+#include "Engine/AssetManager.h"
+
+
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"),true,TEXT("Enable spawning bots"),ECVF_Cheat);
@@ -18,6 +26,12 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"),true,TEXT("
 AActionRPGGameModeBase::AActionRPGGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
+	CreditsPerKill = 50.0f;
+	PlayerStateClass = AActionRPGPlayerState::StaticClass();
+	
+	DesiredPowerupCount = 10;
+	RequiredPowerUpDistance = 20000.0f;
+	InitialSpawnCredits = 50;
 }
 
 
@@ -30,6 +44,17 @@ void AActionRPGGameModeBase::StartPlay()
 		&AActionRPGGameModeBase::SpawnBotTimerElapsed,
 		SpawnTimerInterval,
 		true);
+	// atleast have one powerUp class
+	if (ensure(PowerUpClasses.Num()>0))
+	{
+		// skip blueprint wrapper and use the direct C++ option which the wrapper uses as well 
+		//FEnvQueryRequest Request( prepares a new query using PowerUpSpawnQuery asset[which are basically rules for the search] and sets this actor as the owner/requester)
+		FEnvQueryRequest Request(PowerUpSpawnQuery,this);
+		//Request.Execute()-> Instantly launches the query on a background thread.
+		//EEnvQueryRunMode::AllMatching-> tells the query to return every valid Item it finds, rather than just the single best score 
+		Request.Execute(EEnvQueryRunMode::AllMatching,this,&ThisClass::OnPowerUpSpawnQueryCompleted);
+		//&ThisClass::OnPowerUpSpawnQueryCompleted -> registers the function as the callback
+	}
 	
 }
 
@@ -48,6 +73,16 @@ void AActionRPGGameModeBase::KillAI()
 		
 	}
 }
+
+void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result)
+{
+	FEnvQueryResult* QueryResult = Result.Get();
+	if (!QueryResult->IsSuccessful())
+	{
+		UE_LOG(LogTemp,Warning,)
+	}
+}
+
 void AActionRPGGameModeBase::SpawnBotTimerElapsed()
 {
 	if (!CVarSpawnBots.GetValueOnGameThread())
@@ -103,6 +138,16 @@ void AActionRPGGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		Delegate.BindUFunction(this,"RespawnPlayerElapsed",Player->GetController());
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay,Delegate,RespawnDelay,false);
+	}
+	//to give credits for kill
+	APawn* KillerPawn = Cast<APawn>(Killer);
+	if (KillerPawn)
+	{
+		AActionRPGPlayerState*PS = KillerPawn->GetPlayerState<AActionRPGPlayerState>();
+		if (PS)
+		{
+			PS->AddCredits(CreditsPerKill);
+		}
 	}
 	UE_LOG(LogTemp,Log,TEXT("OnAction Killed: Victim: %s,Killer: %s"),*GetNameSafe(VictimActor),*GetNameSafe(Killer));
 }
