@@ -12,7 +12,7 @@ void UActionRPGActionComponent::BeginPlay()
 	
 	for (TSubclassOf<UActionRPGAction> ActionClass :DefaultActions)
 	{
-		AddAction(ActionClass);
+		AddAction(GetOwner(), ActionClass);
 	}
 
 }
@@ -27,7 +27,7 @@ void UActionRPGActionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 }
 
-void UActionRPGActionComponent::AddAction(TSubclassOf<UActionRPGAction> ActionClass)
+void UActionRPGActionComponent::AddAction(AActor *Instigator,TSubclassOf<UActionRPGAction> ActionClass)
 {
 	if (!ensure(ActionClass)){return;}
 	
@@ -39,6 +39,10 @@ void UActionRPGActionComponent::AddAction(TSubclassOf<UActionRPGAction> ActionCl
 	if (ensure(NewAction))
 	{
 		Actions.Add(NewAction);
+		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
+		{
+			NewAction->StartAction(Instigator);
+		}
 	}
 }
 
@@ -82,6 +86,15 @@ bool UActionRPGActionComponent::StopActionByName(AActor* Instigator, FName Actio
 	}
 	return false;
 }
+
+void UActionRPGActionComponent::RemoveAction(UActionRPGAction* ActionToRemove)
+{
+	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning())) 
+	{
+		return;
+	}
+	Actions.Remove(ActionToRemove);
+ }
 
 
 

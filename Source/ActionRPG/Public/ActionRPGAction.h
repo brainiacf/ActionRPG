@@ -34,6 +34,10 @@ protected:
 	/*Internal flag to track if we are currently active */
 	bool bIsRunning;
 public:
+		
+	UPROPERTY(EditDefaultsOnly,Category=Action)
+	bool bAutoStart;
+	
 	// Unique ID for this action (e.g. Sprint,attack ) used to trigger the it
 	UPROPERTY(EditDefaultsOnly,Category=Action)
 	FName ActionName;

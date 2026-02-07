@@ -25,7 +25,7 @@ public:
 	
 	//Creates a new Action Instance and add it to the list. 
 	UFUNCTION(BlueprintCallable,Category=Actions)
-	void AddAction(TSubclassOf<UActionRPGAction> ActionClass);
+	void AddAction(AActor* Instigator, TSubclassOf<UActionRPGAction> ActionClass);
 	
 	// Finds an action by 'ActionName' and tries to start it 
 	UFUNCTION(BlueprintCallable,Category=Actions)
@@ -34,7 +34,9 @@ public:
 	// Finds an action by 'ActionName' and tries to stop it 
 	UFUNCTION(BlueprintCallable,Category=Actions)
 	bool StopActionByName(AActor*Instigator,FName ActionName);
-	
+	//
+	UFUNCTION(BlueprintCallable,Category=Actions)
+	void RemoveAction(UActionRPGAction* ActionToRemove);
 
 protected:
 	virtual void BeginPlay() override;
