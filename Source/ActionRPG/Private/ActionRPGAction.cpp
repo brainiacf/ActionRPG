@@ -36,13 +36,14 @@ void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
 	// this marks the character with whatever status this aciton provides/
 	
 	Comp->ActiveGameplayTags.AppendTags(GrantTags);
-	RepData.bIsRunning = true;
+	/*RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
 	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
 	{
 		TimeStarted = GetWorld()->TimeSeconds;
 	}
-	//GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(),this);
+	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(),this);*/
+	
 	// mark as running so we don't start it twice.
 	bIsRunning = true;
 }

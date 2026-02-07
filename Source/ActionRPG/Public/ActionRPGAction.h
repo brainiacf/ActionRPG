@@ -11,7 +11,7 @@ class UWorld;
 class UActionRPGActionComponent;
 class UTexture2D;
 
-USTRUCT()
+/*USTRUCT()
 struct FActionRepData{
 	GENERATED_BODY()
 public:
@@ -26,6 +26,7 @@ public:
 
 
 };
+*/
 /**
  * UCLASS(Blueprintable) -> allows us to Create Blueprint subclasses (eg-> SprintAction)
  */
@@ -56,13 +57,14 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly,Category=Tags)
 	FGameplayTagContainer BlockedTags;
-	UPROPERTY(Transient,Replicated)
-	FActionRepData RepData;
+	//UPROPERTY(Transient,Replicated)
+//	FActionRepData RepData;
 	
-	UPROPERTY(Transient,Replicated)
-	float TimeStarted;
-	UFUNCTION()
-	void OnRep_RepData();
+	//UPROPERTY(Transient,Replicated)
+	//float TimeStarted;
+	
+	//UFUNCTION()
+	//void OnRep_RepData();
 	/*Internal flag to track if we are currently active */
 	bool bIsRunning;
 	
