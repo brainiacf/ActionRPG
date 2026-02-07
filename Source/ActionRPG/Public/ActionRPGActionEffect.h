@@ -31,6 +31,7 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category="Effects")
 	void ExecutePeriodicEffect(AActor *Instigator);
 	
-	
+public:
+	UActionRPGActionEffect();
 	
 };

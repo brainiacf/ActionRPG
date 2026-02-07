@@ -9,6 +9,23 @@
 
 class UWorld;
 class UActionRPGActionComponent;
+class UTexture2D;
+
+USTRUCT()
+struct FActionRepData{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	bool bIsRunning;
+	UPROPERTY()
+	TObjectPtr<AActor> Instigator;
+	FActionRepData()
+	{
+		bIsRunning = false;
+	}
+
+
+};
 /**
  * UCLASS(Blueprintable) -> allows us to Create Blueprint subclasses (eg-> SprintAction)
  */
@@ -17,9 +34,17 @@ class ACTIONRPG_API UActionRPGAction : public UObject
 {
 	GENERATED_BODY()
 protected:
+	//TSoftObjectPtr -> forces the asset to load into memory immediately when object loads, stores the path to the asset// Used to prevent massive load times and memory usage 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category=UI)
+	TSoftObjectPtr<UTexture2D> Icon;
+	
+	//Transient-> tells UE to not save this variable to disk 
+	UPROPERTY(BlueprintReadWrite,Transient,Category=Action)
+	TObjectPtr<UActionRPGActionComponent> ActionComp;
+	
 	// helper func to easily access the component that "owns" this action 
 	UFUNCTION( BlueprintCallable ,Category=Action)
-	UActionRPGActionComponent*GetOwningComponent();
+	UActionRPGActionComponent*GetOwningComponent() const;
 	
 	/*tags added to owning actor when action is activated, removed when action is stopped / completed.
 	* tags applied to the owning actor while the action is running */
@@ -31,10 +56,33 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly,Category=Tags)
 	FGameplayTagContainer BlockedTags;
+	UPROPERTY(Transient,Replicated)
+	FActionRepData RepData;
+	
+	UPROPERTY(Transient,Replicated)
+	float TimeStarted;
+	UFUNCTION()
+	void OnRep_RepData();
 	/*Internal flag to track if we are currently active */
 	bool bIsRunning;
+	
+	
+	UPROPERTY(EditDefaultsOnly,Category=Action)
+	FGameplayTag ActivationTag;
+	
 public:
-		
+	UFUNCTION(BlueprintPure)
+	FGameplayTag GetActivationTag()const
+	{
+		return ActivationTag;
+	}
+	UFUNCTION(BlueprintPure)
+	bool IsAutoStart() const
+	{
+		return bAutoStart;
+	}
+	void Initialize(UActionRPGActionComponent* NewActionComp);
+	// start immediately when added to an action component 	
 	UPROPERTY(EditDefaultsOnly,Category=Action)
 	bool bAutoStart;
 	

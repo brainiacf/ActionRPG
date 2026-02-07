@@ -2,9 +2,50 @@
 #include "ActionRPGAction.h"
 #include "Engine/World.h"
 #include "ActionRPGActionComponent.h"
+#include "Net/UnrealNetwork.h"
 
+#include  UE_INLINE_GENERATED_CPP_BY_NAME(ActionRPGAction)
 
+void UActionRPGAction::Initialize(UActionRPGActionComponent* NewActionComp)
+{
+	ActionComp = NewActionComp;
+}
 
+bool UActionRPGAction::CanStart_Implementation(AActor* Instigator)
+{
+	// Rule 1 -> Cannot Start if already running.
+	if (IsRunning())
+	{return false;}
+	
+	//Rule 2 -> Check for blocked tags 
+	UActionRPGActionComponent*Comp = GetOwningComponent();
+	
+	// "HasAny" checks if the component has ANY of the tags in out Blocked list; 
+	if (Comp->ActiveGameplayTags.HasAny(BlockedTags)){return false;}
+	
+	return true;
+
+}
+void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
+{
+	UE_LOG(LogTemp,Log,TEXT("Start %s"),*GetNameSafe(this));
+	// get the component that owns us 
+	UActionRPGActionComponent*Comp = GetOwningComponent();
+	
+	//Add Our "GrantTags" to the component.
+	// this marks the character with whatever status this aciton provides/
+	
+	Comp->ActiveGameplayTags.AppendTags(GrantTags);
+	RepData.bIsRunning = true;
+	RepData.Instigator = Instigator;
+	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
+	{
+		TimeStarted = GetWorld()->TimeSeconds;
+	}
+	//GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(),this);
+	// mark as running so we don't start it twice.
+	bIsRunning = true;
+}
 
 void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 {
@@ -22,20 +63,14 @@ void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 	
 }
 
-void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
+
+UActionRPGActionComponent* UActionRPGAction::GetOwningComponent() const
 {
-	UE_LOG(LogTemp,Log,TEXT("Start %s"),*GetNameSafe(this));
-	// get the component that owns us 
-	UActionRPGActionComponent*Comp = GetOwningComponent();
 	
-	//Add Our "GrantTags" to the component.
-	// this marks the character with whatever status this aciton provides/
-	
-	Comp->ActiveGameplayTags.AppendTags(GrantTags);
-	
-	// mark as running so we don't start it twice.
-	bIsRunning = true;
+	return ActionComp;
 }
+
+
 
 UWorld* UActionRPGAction::GetWorld() const
 {
@@ -47,36 +82,13 @@ UWorld* UActionRPGAction::GetWorld() const
 	if(Comp){return Comp->GetWorld();}
 	return nullptr;
 }
-bool UActionRPGAction::CanStart_Implementation(AActor* Instigator)
-{
-	// Rule 1 -> Cannot Start if already running.
-	if (IsRunning())
-	{return false;}
-	
-	//Rule 2 -> Check for blocked tags 
-	UActionRPGActionComponent*Comp = GetOwningComponent();
-	
-	// "HasAny" checks if the component has ANY of the tags in out Blocked list; 
-	if (Comp->ActiveGameplayTags.HasAny(BlockedTags)){return false;}
-	
-	return true;
 
-}
 
 
 
 bool UActionRPGAction::IsRunning() const
 {
 	return bIsRunning;
-}
-
-UActionRPGActionComponent* UActionRPGAction::GetOwningComponent()
-{
-	//The purpose of this function is to retrieve the specific Component that "owns" or created this Action.
-	//it allows the action to talk to the component that runs it.
-	// The "Outer" is set when we spawn this object in AActionComponent::AddAction
-	return Cast<UActionRPGActionComponent>(GetOuter());
-	
 }
 
 

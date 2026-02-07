@@ -3,6 +3,12 @@
 #include "ActionRPGActionComponent.h"
 
 
+UActionRPGActionEffect::UActionRPGActionEffect()
+{
+	bAutoStart = true;
+}
+
+
 void UActionRPGActionEffect::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
