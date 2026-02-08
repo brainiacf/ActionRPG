@@ -24,9 +24,9 @@ void UActionRPGActionEffect::StartAction_Implementation(AActor* Instigator)
 		FTimerDelegate Delegate;
 		Delegate.BindUFunction(this,"ExecutePeriodicEffect",Instigator);
 		GetWorld()->GetTimerManager().SetTimer(Period_Handle,Delegate,Period,true);
-		
-		
 	}
+	
+	
 }
 
 void UActionRPGActionEffect::StopAction_Implementation(AActor* Instigator)

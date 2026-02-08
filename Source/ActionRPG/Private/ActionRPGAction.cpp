@@ -68,7 +68,7 @@ void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 UActionRPGActionComponent* UActionRPGAction::GetOwningComponent() const
 {
 	
-	return ActionComp;
+	return Cast<UActionRPGActionComponent>(GetOuter());
 }
 
 

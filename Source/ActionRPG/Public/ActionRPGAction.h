@@ -88,7 +88,7 @@ public:
 	UPROPERTY(EditDefaultsOnly,Category=Action)
 	bool bAutoStart;
 	
-	// Unique ID for this action (e.g. Sprint,attack ) used to trigger the it
+	// Unique ID for this action (e.g. Sprint,attack ) used to trigger it
 	UPROPERTY(EditDefaultsOnly,Category=Action)
 	FName ActionName;
 	
