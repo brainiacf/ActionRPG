@@ -41,7 +41,7 @@ void UActionRPGActionComponent::AddAction(AActor *Instigator,TSubclassOf<UAction
 		Actions.Add(NewAction);
 		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
 		{
-			NewAction->StartAction(Instigator);
+			NewAction->StartAction(Instigator);//		    
 		}
 	}
 }
