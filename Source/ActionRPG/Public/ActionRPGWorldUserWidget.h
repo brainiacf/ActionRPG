@@ -17,8 +17,8 @@ class ACTIONRPG_API UActionRPGWorldUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UOverlay> ParentOverlay;
+	//UPROPERTY(meta = (BindWidget))
+	//TObjectPtr<UOverlay> ParentOverlay;
 	
 	//UI Equivalent of Actor::Tick -> runs Every frame to update position 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;

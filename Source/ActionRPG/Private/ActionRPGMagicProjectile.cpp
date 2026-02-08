@@ -8,6 +8,7 @@
 #include "ActionRPGActionComponent.h"
 #include "ActionRPGGameplayFunctionLibrary.h"
 #include "Engine/Engine.h"
+#include "ActionRPGActionEffect.h"
 
 
 AActionRPGMagicProjectile::AActionRPGMagicProjectile()
@@ -29,8 +30,6 @@ void AActionRPGMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedCo
 	GEngine->AddOnScreenDebugMessage(5,5.0,FColor::Green,TEXT("Hit Damage"));
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		
-		
 		UActionRPGActionComponent* ActionComponent = Cast<UActionRPGActionComponent>(OtherActor->GetComponentByClass(UActionRPGActionComponent::StaticClass()));
 		if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag))
 		{
@@ -38,9 +37,14 @@ void AActionRPGMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedCo
 			SetInstigator(Cast<APawn>(OtherActor));
 			return;
 		}
+		
 		if (UActionRPGGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(),OtherActor,DamageAmount,SweepResult))
 		{
 			Explode();
+			if(ActionComponent)
+			{
+				ActionComponent->AddAction( GetInstigator(),BurningActionClass);
+			}
 		}
 	}
 }

@@ -6,6 +6,8 @@
 #include  "GameplayTags.h"
 #include "ActionRPGMagicProjectile.generated.h"
 
+class UActionRPGActionEffect;
+
 /**
  * 
  */
@@ -19,6 +21,8 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
+	UPROPERTY(EditDefaultsOnly,Category=Damage)
+	TSubclassOf<UActionRPGActionEffect> BurningActionClass; 
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

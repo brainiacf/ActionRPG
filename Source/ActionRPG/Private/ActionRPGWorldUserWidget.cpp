@@ -30,12 +30,12 @@ void UActionRPGWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float In
 		float Scale = UWidgetLayoutLibrary::GetViewportScale(this);
 		ScreenPosition /= Scale;
 		// 4. Apply the new position to the container widget
-		ParentOverlay->SetRenderTranslation(ScreenPosition);
+	//	ParentOverlay->SetRenderTranslation(ScreenPosition);
 	}
 	
 	if (bWasOnScreen != bIsOnScreen)
 	{
-		ParentOverlay->SetVisibility(bIsOnScreen ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	//	ParentOverlay->SetVisibility(bIsOnScreen ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 	}
 	bWasOnScreen = bIsOnScreen;
 }
