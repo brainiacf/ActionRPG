@@ -98,7 +98,7 @@ void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryRe
 		int32 RandomLocationIndex = FMath::RandRange(0,Locations.Num()-1);
 		
 		FVector PickedLocation = Locations[RandomLocationIndex];
-		//remove the picked location so that it isnt processed twice 
+		//remove the picked location so that it isn't processed twice 
 		Locations.RemoveAt(RandomLocationIndex);
 		//check minimum distance requirement
 		bool bValidLocation = true;
@@ -116,7 +116,7 @@ void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryRe
 		// failed the distance Test 
 		if (!bValidLocation)
 		{
-			continue;
+			continue; 
 		}
 		//pick random clas index from the PowerupClasses Arrays
 		int32 RandomClassIndex = FMath::RandRange(0,PowerUpClasses.Num()-1);
