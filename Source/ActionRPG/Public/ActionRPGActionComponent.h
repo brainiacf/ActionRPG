@@ -7,22 +7,8 @@
 
 #include "ActionRPGActionComponent.generated.h"
 
-/*the main goal of this component is to keep a list of actions*/
-/* 
- * TSharedRed<T> -> Shared References.Owns the object. Non-nullable -> usecase: when the object will always exist.
- * 
- * TSharedPtr<T> -> Shared Pointer. Owns the object.Reference counted -> usecase: when the object might be optional, become null i mean
- * 
- * TWeakPtr<T> -> Weak Pointer. Does not own the object. checks if it stills exists -> usecase: Breaking Ref cycles; observing an object without preventing its deletion
- * 
- * TUniquePtr<T>  -> Unique Pointer. Sole ownership. cannot be copied only moved. -> usecase: when need exclusive ownership of a resource 
- * 
- */
 
 class UActionRPGAction;
-/*
- * short lived collection of params (so we shouldn't need to keep weakobjptr's to the components)
- */
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -32,8 +18,8 @@ class ACTIONRPG_API UActionRPGActionComponent : public UActorComponent
 
 public:	
 	UActionRPGActionComponent();
-	//the container holds all currently active tags on this character. // e.g. status, stunned, Status.Sprinting
 	
+	//the container holds all currently active tags on this character. // e.g. status, stunned, Status.Sprinting
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tags)
 	FGameplayTagContainer ActiveGameplayTags;
 	

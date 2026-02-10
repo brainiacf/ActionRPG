@@ -65,10 +65,12 @@ protected:
 	
 	//UFUNCTION()
 	//void OnRep_RepData();
+	
 	/*Internal flag to track if we are currently active */
 	bool bIsRunning;
 	
 	
+	/*Action NickName to Start/Stop without a reference to the object, ill implement this later */
 	UPROPERTY(EditDefaultsOnly,Category=Action)
 	FGameplayTag ActivationTag;
 	

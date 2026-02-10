@@ -8,8 +8,8 @@ UActionRPGActionComponent::UActionRPGActionComponent()
 void UActionRPGActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	// OnStartup loop through the classes selected in the editor (DefaultActions) and turn them into real objects. 
 	
+	// OnStartup loop through the classes selected in the editor (DefaultActions) and turn them into real objects. 
 	for (TSubclassOf<UActionRPGAction> ActionClass :DefaultActions)
 	{
 		AddAction(GetOwner(), ActionClass);
@@ -39,7 +39,7 @@ void UActionRPGActionComponent::AddAction(AActor *Instigator,TSubclassOf<UAction
 	if (ensure(NewAction))
 	{
 		Actions.Add(NewAction);
-		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
+		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator))) /*if an action could be auto start like buff and debuffs then*/
 		{
 			NewAction->StartAction(Instigator);//		    
 		}
@@ -55,7 +55,7 @@ bool UActionRPGActionComponent::StartActionByName(AActor* Instigator, FName Acti
 		if ( Action && Action->ActionName == ActionName)
 		{
 			// we found the action. check if it is allowed to run 
-			if (!Action->CanStart(Instigator))
+			if (!Action->CanStart(Instigator))/*cannot start!*/
 			{
 				FString FailedMsg = FString::Printf(TEXT("failed to run: %s"),*ActionName.ToString());
 				//GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Red,FailedMsg);
@@ -89,7 +89,7 @@ bool UActionRPGActionComponent::StopActionByName(AActor* Instigator, FName Actio
 
 void UActionRPGActionComponent::RemoveAction(UActionRPGAction* ActionToRemove)
 {
-	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning())) 
+	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning())) /*Action to remove is not null and it should not be running*/
 	{
 		return;
 	}
