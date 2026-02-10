@@ -86,7 +86,8 @@ public:
 		return bAutoStart;
 	}
 	void Initialize(UActionRPGActionComponent* NewActionComp);
-	// start immediately when added to an action component 	
+	
+	// start immediately when added to an action component, Action Component checks while adding the action  if it can auto start -> then starts the action
 	UPROPERTY(EditDefaultsOnly,Category=Action)
 	bool bAutoStart;
 	
