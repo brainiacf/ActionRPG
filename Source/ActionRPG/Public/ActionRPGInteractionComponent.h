@@ -10,7 +10,7 @@ class UActionRPGWorldUserWidget;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONRPG_API UActionRPGInteractionComponent : public UActorComponent
-{
+{/**/
 	GENERATED_BODY()
 
 public:	
@@ -20,6 +20,11 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	void FindBestInteractable();
+	
+	UFUNCTION(Server,Reliable)
+	/*Reliable -> will always arrive, eventually. Request will be resent unless an acknowledgement was received
+	Unreliable -> Not guaranteed, packet can get lost and wont retry*/
+	void ServerInteract(AActor* InFocus);
 
 	UPROPERTY()		
 	AActor*FocusedActor;

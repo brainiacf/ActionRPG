@@ -27,7 +27,14 @@ void UActionRPGInteractionComponent::TickComponent(float DeltaTime, enum ELevelT
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	FindBestInteractable();
+	
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if (MyPawn->IsLocallyControlled())
+	{
+		FindBestInteractable();
+	}
+	
+	
 }
 
 
@@ -112,17 +119,22 @@ void UActionRPGInteractionComponent::FindBestInteractable()
 
 void UActionRPGInteractionComponent::PrimaryInteract()
 {
-	
-	if (!FocusedActor)
+	ServerInteract(FocusedActor); 
+			
+}
+
+void UActionRPGInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
+{
+	if (InFocus == nullptr)
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Green,TEXT("Bro who you focusing at?? "));
+			GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Green,TEXT("Bro who you focusing at?? "));
 		}
 		return;
 	}
 	//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("HitActor"));
 	APawn*MyPawn = Cast<APawn>(GetOwner());
-	IActionRPGGameplayInterface::Execute_Interact(FocusedActor,MyPawn);
-			
+	IActionRPGGameplayInterface::Execute_Interact(InFocus,MyPawn);
+		
 }
