@@ -129,7 +129,7 @@ void UActionRPGInteractionComponent::ServerInteract_Implementation(AActor* InFoc
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Green,TEXT("Bro who you focusing at?? "));
+			GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Green,TEXT("Bro who you focusing at?? "));/**/
 		}
 		return;
 	}
