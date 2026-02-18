@@ -4,6 +4,8 @@
 UActionRPGActionComponent::UActionRPGActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	
+	SetIsReplicatedByDefault(true);
 }
 void UActionRPGActionComponent::BeginPlay()
 {
@@ -16,6 +18,8 @@ void UActionRPGActionComponent::BeginPlay()
 	}
 
 }
+
+
 void UActionRPGActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -61,6 +65,12 @@ bool UActionRPGActionComponent::StartActionByName(AActor* Instigator, FName Acti
 				//GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Red,FailedMsg);
 				continue;
 			}
+			
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStartAction(Instigator,ActionName);
+			}
+			
 			// it's allowed! Run the Logic
 			Action->StartAction(Instigator);
 			return true;
@@ -96,6 +106,11 @@ void UActionRPGActionComponent::RemoveAction(UActionRPGAction* ActionToRemove)
 	Actions.Remove(ActionToRemove);
  }
 
+void UActionRPGActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
+	
+}
 
 
 

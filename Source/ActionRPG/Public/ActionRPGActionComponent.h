@@ -19,6 +19,8 @@ class ACTIONRPG_API UActionRPGActionComponent : public UActorComponent
 public:	
 	UActionRPGActionComponent();
 	
+	
+	
 	//the container holds all currently active tags on this character. // e.g. status, stunned, Status.Sprinting
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tags)
 	FGameplayTagContainer ActiveGameplayTags;
@@ -40,6 +42,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UFUNCTION(Server,Reliable)
+	void ServerStartAction(AActor*Instigator, FName ActionName);
 	
 	// the list of instantiated Action Object.
 	UPROPERTY()
