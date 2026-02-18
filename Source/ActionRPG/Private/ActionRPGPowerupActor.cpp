@@ -12,13 +12,13 @@ AActionRPGPowerupActor::AActionRPGPowerupActor()
 	RootComponent = SphereComponent;
 	RespawnTime = 10.0f;
 	
-
+	SetReplicates(true);
 }
 void AActionRPGPowerupActor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnSphereOverlap);
-}
+}	
 
 
 void AActionRPGPowerupActor::Interact_Implementation(APawn* InstigatorPawn)

@@ -20,7 +20,7 @@
 #include "Engine/Engine.h"
 #include "Components/AudioComponent.h"
 #include "ActionRPGActionComponent.h"
-
+#include "Net/UnrealNetwork.h"
 
 AActionRPGCharacter::AActionRPGCharacter()
 {
@@ -54,6 +54,27 @@ AActionRPGCharacter::AActionRPGCharacter()
 void AActionRPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	// 1. Get the Player Controller
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		// 2. ONLY do this for the local player (The person sitting at the computer)
+		if (IsLocallyControlled())
+		{
+			// 3. Add Mapping Context (The fix from before)
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+			{
+				Subsystem->AddMappingContext(InputMappingContext, 0);
+			}
+
+			// 4. --- NEW FIX: Force Input Mode ---
+			// Hide the mouse cursor so it locks to the center of the screen
+			PC->SetShowMouseCursor(false); 
+
+			// Tell Unreal: "Ignore UI, send all keyboard/mouse clicks to the Game"
+			FInputModeGameOnly InputModeData;
+			PC->SetInputMode(InputModeData);
+		}
+	}
 	
 }
 
@@ -61,22 +82,14 @@ void AActionRPGCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	AttributeComponent->OnHealthChange.AddDynamic(this,&AActionRPGCharacter::OnHealthChanged);
+	// Add input Mapping Context
+
 }
 
 void AActionRPGCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
-	// Add input Mapping Context
-	if (APlayerController* PC = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
-		{
-			//Clear Old Mapping to prevent duplicates if possesion changes
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(InputMappingContext,0);
-		}
-	}
+	
 }
 
 void AActionRPGCharacter::Tick(float DeltaTime)
@@ -126,6 +139,11 @@ void AActionRPGCharacter::HealSelf(float Amount)
 
 void AActionRPGCharacter::Move(const FInputActionValue& Value)
 {
+	if (HasAuthority()) // Only print for the Server player
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, TEXT("SERVER IS RECEIVING INPUT!"));
+	}
+	
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	if (Controller)
 	{

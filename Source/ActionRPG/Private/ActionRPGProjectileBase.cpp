@@ -25,6 +25,7 @@ AActionRPGProjectileBase::AActionRPGProjectileBase()
 	MovementComponent->bInitialVelocityInLocalSpace = true; // defines which space the particle's initial velocity is interpreted in: true ini. vel. is relative to the emitter's local rotation and pos. false -> ini. vel. is in world space.
 	MovementComponent->ProjectileGravityScale = 0.0f;
 	MovementComponent->InitialSpeed = 6000.0f;
+	//SetReplicates(true);
 }
 
 void AActionRPGProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,

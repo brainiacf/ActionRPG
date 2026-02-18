@@ -9,6 +9,7 @@
 
 class UNiagaraComponent;
 class UStaticMeshComponent;
+class UCurveFloat;
 UCLASS()
 class ACTIONRPG_API AActionRPGItemChest : public AActor, public  IActionRPGGameplayInterface
 {
@@ -28,9 +29,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category=Animation)
 	TObjectPtr<UCurveFloat> LidAnimCurve;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened",BlueprintReadOnly) // Repnotify
 	bool bLidOpened;
 
+	UFUNCTION()
+	void OnRep_LidOpened();
+	
 	void OpenChest();
 
 	UPROPERTY(VisibleAnywhere)
@@ -41,5 +45,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UNiagaraComponent> OpenChestEffect;
+
 
 };
