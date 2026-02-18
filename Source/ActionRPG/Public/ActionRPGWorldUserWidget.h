@@ -37,7 +37,7 @@ public:
 	static void AddToRootCanvasPanel(UUserWidget* InNewWidget);
 	
 	//the actor this widget is floating above
-	UPROPERTY(BlueprintReadOnly,Category=UI)
+	UPROPERTY(BlueprintReadWrite,Category=UI, meta = (ExposeOnSpawn = true))
 	AActor* AttachActor;
 	
 	//offset from the actor's origin(for a character Z = 90 )
