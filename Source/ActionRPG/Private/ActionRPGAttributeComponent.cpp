@@ -49,27 +49,6 @@ bool UActionRPGAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, fl
 	}
 	return ActualDelta != 0.0f;
 }
-bool UActionRPGAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float DeltaRage)
-{
-	if (!GetOwner()->CanBeDamaged() && DeltaRage <0.0f) // can we damage the owner , if not return here 
-	{
-		return false;
-	}
-	float OldRage = Rage;
-	Rage = FMath::Clamp(Rage + DeltaRage,0.0f,MaxRage);
-	float ActualDelta = Rage - OldRage;
-	if (ActualDelta != 0.0f)
-	{
-		OnRageChange.Broadcast(InstigatorActor,this,Rage,ActualDelta);
-		return true;
-	}
-	return false;
-}
-
-
-
-
-
 
 //helper function -> to quickly get the Attribute Component from Any actor  
 UActionRPGAttributeComponent* UActionRPGAttributeComponent::GetAttributes(AActor* FromActor)
@@ -122,6 +101,25 @@ bool UActionRPGAttributeComponent::Kill(AActor* InstigatorActor)
 {
 	return ApplyHealthChange(InstigatorActor,-GetMaxHealth());
 }
+
+bool UActionRPGAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float DeltaRage)
+{
+	if (!GetOwner()->CanBeDamaged() && DeltaRage <0.0f) // can we damage the owner , if not return here 
+	{
+		return false;
+	}
+	float OldRage = Rage;
+	Rage = FMath::Clamp(Rage + DeltaRage,0.0f,MaxRage);
+	float ActualDelta = Rage - OldRage;
+	if (ActualDelta != 0.0f)
+	{
+		OnRageChange.Broadcast(InstigatorActor,this,Rage,ActualDelta);
+		return true;
+	}
+	return false;
+}
+
+
 
 bool UActionRPGAttributeComponent::IsFullHealth() const
 {

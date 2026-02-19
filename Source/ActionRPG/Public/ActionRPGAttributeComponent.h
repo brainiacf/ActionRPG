@@ -80,5 +80,4 @@ public:
 	UFUNCTION(BlueprintCallable,Category=Attributes)
 	bool Kill(AActor*InstigatorActor);
 
-		
 };
