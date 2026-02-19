@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category=Damage)
 	float DamageAmount;
 	
+	UPROPERTY(EditDefaultsOnly,Category=Rage)
+	float RageAmount;
+	
 	UPROPERTY(EditDefaultsOnly,Category=Damage)
 	FGameplayTag ParryTag;
 	

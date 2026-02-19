@@ -7,7 +7,11 @@
 
 //Declare dynamic multicast delegate fiveparams -> ue macro that declares a blueprint assignable multicast delegate
 //In Unreal, the F prefix is a catch-all for "Any class or struct that is NOT a UObject or an Actor."
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChange,AActor*,InstigatorActor,UActionRPGAttributeComponent*,OwningComponent,float,NewHealth,float,Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChange,AActor*,InstigatorActor,UActionRPGAttributeComponent*,OwningComponent,float,NewHealth,float,Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChangeRage,AActor*,InstigatorActor,UActionRPGAttributeComponent*,OwningComponent,float,NewRage,float,Delta);
+
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONRPG_API UActionRPGAttributeComponent : public UActorComponent
 {
@@ -25,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable,Category=Attributes)
 	bool ApplyHealthChange(AActor*InstigatorActor,float DeltaHealth);
 	
+	UFUNCTION(BlueprintCallable,Category="Attributes|Rage")
+	bool ApplyRageChange(AActor* InstigatorActor,float DeltaRage);
+	
 	UFUNCTION(BlueprintCallable,Category=Attributes)
 	bool IsFullHealth() const;
 	
@@ -36,9 +43,21 @@ public:
 	
 	UFUNCTION(BlueprintCallable,Category=Attributes)
 	float GetHealth() const;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	UFUNCTION(BlueprintCallable,Category="Attributes|Rage")
+	bool IsFullRage() const;
+	
+	UFUNCTION(BlueprintCallable,Category="Attributes|Rage")
+	float GetMaxRage() const;
+	
+	UFUNCTION(BlueprintCallable,Category="Attributes|Rage")
+	float GetRage()const;
 	
 	UPROPERTY(BlueprintAssignable,Category=Events)
-	FOnHealthChange OnHealthChange;
+	FOnAttributeChange OnHealthChange;
+	
+	UPROPERTY(BlueprintAssignable,Category=Events)
+	FOnAttributeChangeRage OnRageChange;
 
 protected:
 	
@@ -46,6 +65,12 @@ protected:
 	float Health;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Replicated,Category=Attributes)
 	float MaxHealth;
+	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Replicated,Category=Attributes)
+	float Rage;
+	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Replicated,Category=Attributes)
+	float MaxRage;
 	
 	UFUNCTION(NetMulticast,Reliable)
 	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);

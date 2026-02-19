@@ -191,6 +191,8 @@ void AActionRPGCharacter::PrimaryAttack()
 
 void AActionRPGCharacter::BlackholeAttack()
 {
+	// black hole attack can only be started if you have rage > 20, it will cost 10 
+	/*Attribute Component -> get Rage -> Check Rage if Greater than 20 then do Start ActionByName, and subtract 10 from rage */
 	ActionComponent->StartActionByName(this,"BlackholeAttack");
 }
 

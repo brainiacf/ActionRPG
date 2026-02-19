@@ -31,3 +31,13 @@ bool UActionRPGGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCau
 	}
 	return false;
 }
+
+bool UActionRPGGameplayFunctionLibrary::ApplyRage(AActor* DamageCauser, AActor* TargetActor, float RageAmount)
+{
+	UActionRPGAttributeComponent *AttributeComponent = UActionRPGAttributeComponent::GetAttributes(TargetActor);
+	if (AttributeComponent)
+	{
+		return AttributeComponent->ApplyRageChange(DamageCauser,RageAmount);
+	}
+	return false;
+}

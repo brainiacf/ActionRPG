@@ -14,6 +14,7 @@
 AActionRPGMagicProjectile::AActionRPGMagicProjectile()
 {
 	DamageAmount = 20.0f;
+	RageAmount = 20.f;
 	//SphereComponent->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnActorHit);
 	
 }
@@ -38,14 +39,18 @@ void AActionRPGMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedCo
 			return;
 		}
 		
+		UActionRPGGameplayFunctionLibrary::ApplyRage(GetInstigator(),OtherActor,RageAmount);
+		
 		if (UActionRPGGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(),OtherActor,DamageAmount,SweepResult))
 		{
+			
 			Explode();
 			if(ActionComponent)
 			{
 				ActionComponent->AddAction( GetInstigator(),BurningActionClass);
 			}
 		}
+		
 	}
 }
 
