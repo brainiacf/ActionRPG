@@ -18,6 +18,13 @@ public:
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:
+	
+	UPROPERTY(EditDefaultsOnly,ReplicatedUsing=OnRep_IsActive, Category = Visibility)
+	bool bIsActive;
+	
+	UFUNCTION()
+	void OnRep_IsActive(bool bOldIsActive);
+	
 	UPROPERTY(EditDefaultsOnly, Category=PowerUp)
 	float RespawnTime;
 
