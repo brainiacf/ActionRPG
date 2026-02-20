@@ -32,6 +32,12 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<UActionRPGWorldUserWidget> ActiveHealthBar;
 	
+	UPROPERTY(EditAnywhere, Category=UI)
+	TSubclassOf<UUserWidget> SpottedWidgetClass;
+	
+	/*UPROPERTY(Transient)
+	TObjectPtr<UActionRPGWorldUserWidget> SpottedWidget;*/
+	
 	
 
 	UPROPERTY(EditDefaultsOnly, Category=Action)
@@ -59,4 +65,9 @@ protected:
 
 protected:
 	virtual void PostInitializeComponents() override;
+	
+	/*when AI sees pawn it stores the value to the Blackboard key component we have the component, we have the component,we can return a cast from that Key */
+	
+	AActor* GetTargetActor();
+
 };

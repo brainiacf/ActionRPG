@@ -19,7 +19,9 @@ class ACTIONRPG_API UActionRPGActionComponent : public UActorComponent
 public:	
 	UActionRPGActionComponent();
 	
-	
+	/*returns the first occurence of action matching the class provided*/
+	UFUNCTION(BlueprintCallable,Category=Actions)
+	UActionRPGAction*GetAction(TSubclassOf<UActionRPGAction>ActionClass);
 	
 	//the container holds all currently active tags on this character. // e.g. status, stunned, Status.Sprinting
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tags)

@@ -1,4 +1,6 @@
 #include "ActionRPGAttributeComponent.h"
+
+#include "ActionRPGAction.h"
 #include "ActionRPGGameModeBase.h"
 #include "Net/UnrealNetwork.h"
 
@@ -97,6 +99,8 @@ float UActionRPGAttributeComponent::GetRage() const
 {
 	return Rage;
 }
+
+
 bool UActionRPGAttributeComponent::Kill(AActor* InstigatorActor)
 {
 	return ApplyHealthChange(InstigatorActor,-GetMaxHealth());

@@ -5,6 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "ActionRPGAttributeComponent.generated.h"
 
+
 //Declare dynamic multicast delegate fiveparams -> ue macro that declares a blueprint assignable multicast delegate
 //In Unreal, the F prefix is a catch-all for "Any class or struct that is NOT a UObject or an Actor."
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChange,AActor*,InstigatorActor,UActionRPGAttributeComponent*,OwningComponent,float,NewHealth,float,Delta);
@@ -74,6 +75,9 @@ protected:
 	
 	UFUNCTION(NetMulticast,Reliable)
 	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+	
+	
+	
 
 public:	
 	

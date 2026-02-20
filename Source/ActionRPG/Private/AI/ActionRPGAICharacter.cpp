@@ -41,11 +41,34 @@ void AActionRPGAICharacter::PostInitializeComponents()
 	AttributeComponent->OnHealthChange.AddDynamic(this,&ThisClass::OnHealthChange);
 }
 
+AActor* AActionRPGAICharacter::GetTargetActor()
+{
+	
+	if (AAIController * whomthatcontrolme = Cast<AAIController>(GetController()))
+	{
+		return  Cast<AActor>(whomthatcontrolme->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
+	}
+	return nullptr;
+}
+
 
 void AActionRPGAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	SetTargetActor(Pawn);
-	DrawDebugString(GetWorld(),GetActorLocation(),"PlayerSpotted",nullptr,FColor::Green,4.0f,true);
+	
+	
+	if (GetTargetActor()!=Pawn)
+	{
+		SetTargetActor(Pawn);
+		UActionRPGWorldUserWidget *SpottedWidget = CreateWidget<UActionRPGWorldUserWidget>(GetWorld(),SpottedWidgetClass);
+		if (SpottedWidget)
+		{
+			SpottedWidget->AttachActor = this;
+			SpottedWidget->AddToViewport(10);
+		}
+		
+		
+	}
+//	DrawDebugString(GetWorld(),GetActorLocation(),"PlayerSpotted",nullptr,FColor::Green,4.0f,true);
 }
 
 void AActionRPGAICharacter::SetTargetActor(AActor* NewTarget)
