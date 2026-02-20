@@ -74,6 +74,8 @@ void UActionRPGAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimePr
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UActionRPGAttributeComponent, Health);
 	DOREPLIFETIME(UActionRPGAttributeComponent, MaxHealth);
+	DOREPLIFETIME(UActionRPGAttributeComponent, MaxRage);
+	DOREPLIFETIME(UActionRPGAttributeComponent, Rage);
 	
 	//DOREPLIFETIME_CONDITION -> can be used for bandwidth optimization since, we only need to send the data when it is absolutely needed. basically getting the vars with condition will help in bandwidth send when needed
 	//DOREPLIFETIME_CONDITION(UActionRPGAttributeComponent,MaxHealth,COND_OwnerOnly);
@@ -83,6 +85,13 @@ void UActionRPGAttributeComponent::MulticastHealthChanged_Implementation(AActor*
 {
 	OnHealthChange.Broadcast(InstigatorActor,this,NewHealth,Delta);	
 }
+void UActionRPGAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigatorActor, float NewRage,
+	float ActualDelta)
+{
+	OnRageChange.Broadcast(InstigatorActor,this,NewRage,ActualDelta);
+	
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool UActionRPGAttributeComponent::IsFullRage() const
@@ -101,6 +110,7 @@ float UActionRPGAttributeComponent::GetRage() const
 }
 
 
+
 bool UActionRPGAttributeComponent::Kill(AActor* InstigatorActor)
 {
 	return ApplyHealthChange(InstigatorActor,-GetMaxHealth());
@@ -117,7 +127,8 @@ bool UActionRPGAttributeComponent::ApplyRageChange(AActor* InstigatorActor, floa
 	float ActualDelta = Rage - OldRage;
 	if (ActualDelta != 0.0f)
 	{
-		OnRageChange.Broadcast(InstigatorActor,this,Rage,ActualDelta);
+		//OnRageChange.Broadcast(InstigatorActor,this,Rage,ActualDelta);
+		MulticastRageChanged_Implementation(InstigatorActor,Rage,ActualDelta);
 		return true;
 	}
 	return false;

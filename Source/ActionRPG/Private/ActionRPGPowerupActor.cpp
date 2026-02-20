@@ -3,6 +3,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/SphereComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(ActionRPGPowerupActor)/* ill be the best mf in game dev there will ever be. */
+
 AActionRPGPowerupActor::AActionRPGPowerupActor()
 {
 	//PrimaryActorTick.bCanEverTick = true;
