@@ -1,4 +1,5 @@
 #include "ActionRPGPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 void AActionRPGPlayerState::AddCredits(int32 Delta)
 {
@@ -25,9 +26,22 @@ bool AActionRPGPlayerState::RemoveCredits(int32 Delta)
 	return true;
 }
 
+
+void AActionRPGPlayerState::OnRep_Credits(int32 OldCredits)
+{
+	int32 Delta = Credits - OldCredits;
+	OnCreditsChanged.Broadcast(this,Credits,Delta);
+}
+
 int32 AActionRPGPlayerState::GetCredits() const
 {
 	return Credits;
 	
 }
+void AActionRPGPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AActionRPGPlayerState, Credits);
+}
+
 

@@ -17,8 +17,14 @@ class ACTIONRPG_API AActionRPGPlayerState : public APlayerState
 	GENERATED_BODY()
 	
 protected:
-	UPROPERTY(EditDefaultsOnly,Category = "Credits")
+	/*not marking it as Transient [Transient tells the UE to not save this variable to the SSD ]*/
+	UPROPERTY(EditDefaultsOnly,ReplicatedUsing=OnRep_Credits,Category = "Credits")
 	int32 Credits;
+	
+	UFUNCTION()
+	void OnRep_Credits(int32 OldCredits);
+	
+
 	
 public:
 	UFUNCTION(BlueprintCallable,Category="Credits")
@@ -33,5 +39,6 @@ public:
 	UPROPERTY(BlueprintAssignable,Category="Events")
 	FOnCreditsChanged OnCreditsChanged;
 	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 };
