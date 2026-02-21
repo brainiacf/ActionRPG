@@ -69,9 +69,10 @@ void UActionRPGActionComponent::AddAction(AActor *Instigator,TSubclassOf<UAction
 	// param 'this' Sets the component as the 'outer' of the new Action.
 	// This allows the action to call GetOuter() to find this component later. 
 	
-	UActionRPGAction* NewAction = NewObject<UActionRPGAction>(this, ActionClass);
+	UActionRPGAction* NewAction = NewObject<UActionRPGAction>(GetOwner(), ActionClass);
 	if (ensure(NewAction))
 	{
+		NewAction->Initialize(this);
 		Actions.Add(NewAction);
 		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator))) /*if an action could be auto start like buff and debuffs then*/
 		{

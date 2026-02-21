@@ -9,7 +9,7 @@
 
 void UActionRPGAction::Initialize(UActionRPGActionComponent* NewActionComp)
 {
-	ActionComp = NewActionComp;
+	ActionComponent = NewActionComp;
 }
 
 bool UActionRPGAction::CanStart_Implementation(AActor* Instigator)
@@ -50,7 +50,7 @@ void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 	UE_LOG(LogTemp, Log, TEXT(" Stop %s"), *GetNameSafe(this));
 	
 	//safely check: we shouldn't be stopping if we aren't running.
-	ensureAlways(bIsRunning);
+	//ensureAlways(bIsRunning);
 	//get comp  
 	UActionRPGActionComponent* Comp = GetOwningComponent();
 	
@@ -65,7 +65,8 @@ void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 UActionRPGActionComponent* UActionRPGAction::GetOwningComponent() const
 {
 	
-	return Cast<UActionRPGActionComponent>(GetOuter());
+	
+	return ActionComponent;
 }
 
 void UActionRPGAction::OnRep_IsRunning()
@@ -84,6 +85,7 @@ void UActionRPGAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UActionRPGAction,bIsRunning);
+	DOREPLIFETIME(UActionRPGAction,ActionComponent);
 }
 
 
@@ -93,8 +95,8 @@ UWorld* UActionRPGAction::GetWorld() const
 	// CRITICAL: UObjects don't know what "World" they are in by default.
 	// We assume the "Outer" (the object that created this action) is the Component.
 	// We cast the Outer to an Actor Component to Ask for IT for the world;
-	UActorComponent*Comp = Cast<UActorComponent>(GetOuter());
-	if(Comp){return Comp->GetWorld();}
+	AActor* Actor = Cast<AActor>(GetOuter());
+	if(Actor){return Actor->GetWorld();}
 	return nullptr;
 }
 

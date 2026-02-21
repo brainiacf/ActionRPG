@@ -17,13 +17,17 @@ class ACTIONRPG_API UActionRPGAction : public UObject
 {
 	GENERATED_BODY()
 protected:
+	
+	UPROPERTY(Replicated)
+	UActionRPGActionComponent* ActionComponent ;
+	
 	//TSoftObjectPtr -> forces the asset to load into memory immediately when object loads, stores the path to the asset// Used to prevent massive load times and memory usage 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category=UI)
 	TSoftObjectPtr<UTexture2D> Icon;
 	
-	//Transient-> tells UE to not save this variable to disk 
+	/*//Transient-> tells UE to not save this variable to disk 
 	UPROPERTY(BlueprintReadWrite,Transient,Category=Action)
-	TObjectPtr<UActionRPGActionComponent> ActionComp;
+	TObjectPtr<UActionRPGActionComponent> ActionComp;*/
 	
 	// helper func to easily access the component that "owns" this action 
 	UFUNCTION( BlueprintCallable ,Category=Action)
@@ -54,6 +58,9 @@ protected:
 	FGameplayTag ActivationTag;
 	
 public:
+	
+	/*auto Initialize(UActionRPGActionComponent* NewActionComp) -> void;*/
+	
 	UFUNCTION(BlueprintPure)
 	FGameplayTag GetActivationTag()const
 	{
