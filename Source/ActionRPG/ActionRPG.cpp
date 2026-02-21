@@ -1,4 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ActionRPG.h"
 #include "Modules/ModuleManager.h"
