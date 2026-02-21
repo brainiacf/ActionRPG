@@ -2,6 +2,7 @@
 #include "ActionRPGAction.h"
 #include "Engine/World.h"
 #include "ActionRPGActionComponent.h"
+#include "ActionRPG/ActionRPG.h"
 #include "Net/UnrealNetwork.h"
 
 #include  UE_INLINE_GENERATED_CPP_BY_NAME(ActionRPGAction)
@@ -28,21 +29,15 @@ bool UActionRPGAction::CanStart_Implementation(AActor* Instigator)
 }
 void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp,Log,TEXT("Start %s"),*GetNameSafe(this));
-	// get the component that owns us 
+	
+	LogOnScreen(this,FString::Printf(TEXT("Started %s"), *ActionName.ToString()),FColor::Green);
 	UActionRPGActionComponent*Comp = GetOwningComponent();
 	
 	//Add Our "GrantTags" to the component.
 	// this marks the character with whatever status this aciton provides/
 	
 	Comp->ActiveGameplayTags.AppendTags(GrantTags);
-	/*RepData.bIsRunning = true;
-	RepData.Instigator = Instigator;
-	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
-	{
-		TimeStarted = GetWorld()->TimeSeconds;
-	}
-	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(),this);*/
+	
 	
 	// mark as running so we don't start it twice.
 	bIsRunning = true;
@@ -50,6 +45,8 @@ void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
 
 void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 {
+	
+	LogOnScreen(this,FString::Printf(TEXT("Stopped %s"), *ActionName.ToString()),FColor::Green);
 	UE_LOG(LogTemp, Log, TEXT(" Stop %s"), *GetNameSafe(this));
 	
 	//safely check: we shouldn't be stopping if we aren't running.
@@ -71,6 +68,23 @@ UActionRPGActionComponent* UActionRPGAction::GetOwningComponent() const
 	return Cast<UActionRPGActionComponent>(GetOuter());
 }
 
+void UActionRPGAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
+}
+
+void UActionRPGAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UActionRPGAction,bIsRunning);
+}
 
 
 UWorld* UActionRPGAction::GetWorld() const

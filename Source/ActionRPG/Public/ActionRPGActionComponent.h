@@ -49,7 +49,7 @@ protected:
 	void ServerStartAction(AActor*Instigator, FName ActionName);
 	
 	// the list of instantiated Action Object.
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<UActionRPGAction*> Actions;
 	
 	// These get converted into real objects in BeginPlay
@@ -58,7 +58,11 @@ protected:
 	
 
 public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual bool ReplicateSubobjects(class UActorChannel *Channel,
+		class FOutBunch *Bunch, FReplicationFlags *RepFlags) override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+		FActorComponentTickFunction* ThisTickFunction) override;
 
 		
 };

@@ -11,25 +11,7 @@ class UWorld;
 class UActionRPGActionComponent;
 class UTexture2D;
 
-/*USTRUCT()
-struct FActionRepData{
-	GENERATED_BODY()
-public:
-	UPROPERTY()
-	bool bIsRunning;
-	UPROPERTY()
-	TObjectPtr<AActor> Instigator;
-	FActionRepData()
-	{
-		bIsRunning = false;
-	}
 
-
-};
-*/
-/**
- * UCLASS(Blueprintable) -> allows us to Create Blueprint subclasses (eg-> SprintAction)
- */
 UCLASS(Blueprintable)
 class ACTIONRPG_API UActionRPGAction : public UObject
 {
@@ -57,17 +39,14 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly,Category=Tags)
 	FGameplayTagContainer BlockedTags;
-	//UPROPERTY(Transient,Replicated)
-//	FActionRepData RepData;
-	
-	//UPROPERTY(Transient,Replicated)
-	//float TimeStarted;
-	
-	//UFUNCTION()
-	//void OnRep_RepData();
+
 	
 	/*Internal flag to track if we are currently active */
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	bool bIsRunning;
+	
+	UFUNCTION()
+	void OnRep_IsRunning();
 	
 	
 	/*Action NickName to Start/Stop without a reference to the object, ill implement this later */
@@ -115,6 +94,11 @@ public:
 	// getter for bIsRunning;
 	UFUNCTION(BlueprintCallable,Category=Action)
 	bool IsRunning() const;
+	
+	virtual bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
 
 
 };
