@@ -41,6 +41,7 @@ void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
 	
 	// mark as running so we don't start it twice.
 	RepData.bIsRunning = true;
+	RepData.Instigator = Instigator;
 }
 
 void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
@@ -58,6 +59,7 @@ void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 	Comp->ActiveGameplayTags.RemoveTags(GrantTags);
 	// mark it stopped
 	RepData.bIsRunning = false;
+	RepData.Instigator = Instigator;
 	
 }
 
@@ -69,15 +71,15 @@ UActionRPGActionComponent* UActionRPGAction::GetOwningComponent() const
 	return ActionComponent;
 }
 
-void UActionRPGAction::OnRep_IsRunning()
+void UActionRPGAction::OnRep_RepData()
 {
 	if (RepData.bIsRunning)
 	{
-		StartAction(nullptr);
+		StartAction(RepData.Instigator);
 	}
 	else
 	{
-		StopAction(nullptr);
+		StopAction(RepData.Instigator);
 	}
 }
 

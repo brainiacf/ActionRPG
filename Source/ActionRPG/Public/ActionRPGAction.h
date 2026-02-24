@@ -61,12 +61,12 @@ protected:
 
 	
 	/*Internal flag to track if we are currently active */
-	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
+	UPROPERTY(ReplicatedUsing="OnRep_RepData")
 	FActionRepData RepData;
 	//bool bIsRunning;
 	
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_RepData();
 	
 	
 	/*Action NickName to Start/Stop without a reference to the object, ill implement this later */

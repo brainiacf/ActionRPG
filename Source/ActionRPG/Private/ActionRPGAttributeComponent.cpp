@@ -21,35 +21,44 @@ UActionRPGAttributeComponent::UActionRPGAttributeComponent()
 }
 bool UActionRPGAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float DeltaHealth)
 {
-	if (!GetOwner()->CanBeDamaged() && DeltaHealth <0.0f) // can we damage the owner , if not return here 
+	if (!GetOwner()->CanBeDamaged() && DeltaHealth <0.0f)  
 	{
 		return false;
 	}
-	if (DeltaHealth < 0.0f)// deltahealth is incoming damage to do, if 
+	
+	if (DeltaHealth < 0.0f)
 	{
 		float DamageMultiplier = CVarDamageMultiplier.GetValueOnGameThread();
-		DeltaHealth*=DamageMultiplier;// to work from here and understand why delta health is fucking less than 0
-	}
+		DeltaHealth*=DamageMultiplier;
+	} 
+	
 	float OldHealth = Health;
-	Health = FMath::Clamp(Health + DeltaHealth,0.0f,MaxHealth);
+
+	float NewHealth = Health = FMath::Clamp(Health + DeltaHealth,0.0f,MaxHealth); 	
 	
-	float ActualDelta = Health - OldHealth;
-//	OnHealthChange.Broadcast(InstigatorActor,this,Health,ActualDelta);
-	if (ActualDelta != 0.0f)
+	float ActualDelta = NewHealth - OldHealth;
+	//IsServer()
+	if (GetOwner()->HasAuthority())
 	{
-		MulticastHealthChanged(InstigatorActor,Health,ActualDelta);	
-	}
-	
-	
-	if (ActualDelta < 0.0f && Health == 0.0f)
-	{
-		AActionRPGGameModeBase* GM = GetWorld()->GetAuthGameMode<AActionRPGGameModeBase>();
-		if (GM)
+		Health = NewHealth;	
+		
+		if (ActualDelta != 0.0f)
 		{
-			GM->OnActorKilled(GetOwner(),InstigatorActor);
+			MulticastHealthChanged(InstigatorActor,Health,ActualDelta);	
 		}
+		if (ActualDelta < 0.0f && Health == 0.0f)
+		{
+			AActionRPGGameModeBase* GM = GetWorld()->GetAuthGameMode<AActionRPGGameModeBase>();
+			if (GM)
+			{
+				GM->OnActorKilled(GetOwner(),InstigatorActor);
+			}
+		}
+	
 	}
+	
 	return ActualDelta != 0.0f;
+
 }
 
 //helper function -> to quickly get the Attribute Component from Any actor  
