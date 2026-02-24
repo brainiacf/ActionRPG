@@ -12,6 +12,21 @@ class UActionRPGActionComponent;
 class UTexture2D;
 
 
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+public:
+	
+	UPROPERTY()
+	bool bIsRunning;
+	
+	UPROPERTY()
+	AActor* Instigator;
+	
+};
+
+
 UCLASS(Blueprintable)
 class ACTIONRPG_API UActionRPGAction : public UObject
 {
@@ -47,7 +62,8 @@ protected:
 	
 	/*Internal flag to track if we are currently active */
 	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
-	bool bIsRunning;
+	FActionRepData RepData;
+	//bool bIsRunning;
 	
 	UFUNCTION()
 	void OnRep_IsRunning();

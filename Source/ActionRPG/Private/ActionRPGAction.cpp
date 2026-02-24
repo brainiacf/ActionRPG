@@ -40,7 +40,7 @@ void UActionRPGAction::StartAction_Implementation(AActor* Instigator)
 	
 	
 	// mark as running so we don't start it twice.
-	bIsRunning = true;
+	RepData.bIsRunning = true;
 }
 
 void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
@@ -57,7 +57,7 @@ void UActionRPGAction::StopAction_Implementation(AActor* Instigator)
 	// Remove the tags we granted. the character is no longer in this "State
 	Comp->ActiveGameplayTags.RemoveTags(GrantTags);
 	// mark it stopped
-	bIsRunning = false;
+	RepData.bIsRunning = false;
 	
 }
 
@@ -71,7 +71,7 @@ UActionRPGActionComponent* UActionRPGAction::GetOwningComponent() const
 
 void UActionRPGAction::OnRep_IsRunning()
 {
-	if (bIsRunning)
+	if (RepData.bIsRunning)
 	{
 		StartAction(nullptr);
 	}
@@ -84,7 +84,7 @@ void UActionRPGAction::OnRep_IsRunning()
 void UActionRPGAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UActionRPGAction,bIsRunning);
+	DOREPLIFETIME(UActionRPGAction,RepData);
 	DOREPLIFETIME(UActionRPGAction,ActionComponent);
 }
 
@@ -105,7 +105,7 @@ UWorld* UActionRPGAction::GetWorld() const
 
 bool UActionRPGAction::IsRunning() const
 {
-	return bIsRunning;
+	return RepData.bIsRunning;
 }
 
 

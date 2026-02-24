@@ -40,10 +40,10 @@ void UActionRPGActionEffect::StopAction_Implementation(AActor* Instigator)
 	GetWorld()->GetTimerManager().ClearTimer(Period_Handle);
 	GetWorld()->GetTimerManager().ClearTimer(Duration_Handle);
 	
-	UActionRPGActionComponent* ActionComponent = GetOwningComponent();
-	if (ActionComponent)
+	UActionRPGActionComponent* RPGActionComponent = GetOwningComponent();
+	if (RPGActionComponent)
 	{
-		ActionComponent->RemoveAction(this);
+		RPGActionComponent->RemoveAction(this);
 	}
 	
 	
