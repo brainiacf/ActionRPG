@@ -41,6 +41,7 @@ void UActionRPGActionComponent::BeginPlay()
 }
 
 
+
 void UActionRPGActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -65,6 +66,12 @@ void UActionRPGActionComponent::AddAction(AActor *Instigator,TSubclassOf<UAction
 {
 	if (!ensure(ActionClass)){return;}
 	
+	// skip for clients
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Client attempting to add action. [Class: %s]"),*GetNameSafe(ActionClass));
+		return;
+	}
 	// NewObject Creates the Instance.
 	// param 'this' Sets the component as the 'outer' of the new Action.
 	// This allows the action to call GetOuter() to find this component later. 
@@ -120,6 +127,12 @@ bool UActionRPGActionComponent::StopActionByName(AActor* Instigator, FName Actio
 			// can only stop it if it is running 
 			if (Action->IsRunning())
 			{
+				
+				if (!GetOwner()->HasAuthority())
+				{
+					ServerStopAction(Instigator,ActionName);
+				}
+				 
 				Action->StopAction(Instigator);
 				return true;
 			}
@@ -127,6 +140,11 @@ bool UActionRPGActionComponent::StopActionByName(AActor* Instigator, FName Actio
 	}
 	return false;
 }
+void UActionRPGActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StopActionByName(Instigator,ActionName);
+}
+
 
 void UActionRPGActionComponent::RemoveAction(UActionRPGAction* ActionToRemove)
 {

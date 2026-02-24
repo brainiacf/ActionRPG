@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChangeRage,AActor*,Ins
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONRPG_API UActionRPGAttributeComponent : public UActorComponent
 {
-	GENERATED_BODY()
+	GENERATED_BODY()\
 public:
 	UFUNCTION(BlueprintCallable,Category=Attributes)
 	static UActionRPGAttributeComponent*GetAttributes(AActor* FromActor);
