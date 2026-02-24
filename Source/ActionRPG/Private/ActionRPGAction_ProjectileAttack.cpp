@@ -30,11 +30,14 @@ void UActionRPGAction_ProjectileAttack::StartAction_Implementation(AActor* Insti
 			EAttachLocation::SnapToTarget);
 		// 2. Set a timer to spawn the actual projectile later
 		// This ensures the projectile appears when the character actually "fires" in the animation
-		FTimerHandle TimerHandle_AttackDelay;
-		FTimerDelegate Delegate;
-		Delegate.BindUFunction(this,"AttackAnimDelay_Elapsed",Character);
+		if (Character->HasAuthority())
+		{
+			FTimerHandle TimerHandle_AttackDelay;
+			FTimerDelegate Delegate;
+			Delegate.BindUFunction(this,"AttackAnimDelay_Elapsed",Character);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay,Delegate,AttackAnimDelay,false);
+		}
 		
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay,Delegate,AttackAnimDelay,false);
 	}
 }
 
