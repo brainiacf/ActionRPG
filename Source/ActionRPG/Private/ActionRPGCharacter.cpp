@@ -26,24 +26,24 @@ AActionRPGCharacter::AActionRPGCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GetCapsuleComponent()->InitCapsuleSize(42.f,96.f);
-	// dont rotate when camera Rotates 
+	// dont rotate when camera Rotates
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	//Orient RotationToMovement -> Moves the Character to face the direction they are moving in 
+	//Orient RotationToMovement -> Moves the Character to face the direction they are moving in
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f,500.0f,0.0f);
-	
+
 	//init
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f;
-	CameraBoom->bUsePawnControlRotation = true; // rotate the arm based on the controller 
-	
+	CameraBoom->bUsePawnControlRotation = true; // rotate the arm based on the controller
+
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
 	FollowCamera->SetupAttachment(CameraBoom);
 	FollowCamera->bUsePawnControlRotation = false; // It determines whether that specific component should ignore its own local rotation and instead lock itself to the Player Controller’s rotation (aim direction).
-	
+
 	InteractionComponent = CreateDefaultSubobject<UActionRPGInteractionComponent>("InteractionComponent");
 	AttributeComponent = CreateDefaultSubobject<UActionRPGAttributeComponent>("Attribute");
 	ActionComponent = CreateDefaultSubobject<UActionRPGActionComponent>("ActionComponent");
@@ -68,14 +68,14 @@ void AActionRPGCharacter::BeginPlay()
 
 			// 4. --- NEW FIX: Force Input Mode ---
 			// Hide the mouse cursor so it locks to the center of the screen
-			PC->SetShowMouseCursor(false); 
+			PC->SetShowMouseCursor(false);
 
 			// Tell Unreal: "Ignore UI, send all keyboard/mouse clicks to the Game"
 			FInputModeGameOnly InputModeData;
 			PC->SetInputMode(InputModeData);
 		}
 	}
-	
+
 }
 
 void AActionRPGCharacter::PostInitializeComponents()
@@ -89,7 +89,7 @@ void AActionRPGCharacter::PostInitializeComponents()
 void AActionRPGCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
-	
+
 }
 
 void AActionRPGCharacter::Tick(float DeltaTime)
@@ -143,7 +143,7 @@ void AActionRPGCharacter::Move(const FInputActionValue& Value)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, TEXT("SERVER IS RECEIVING INPUT!"));
 	}
-	
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	if (Controller)
 	{
@@ -155,7 +155,7 @@ void AActionRPGCharacter::Move(const FInputActionValue& Value)
 		//
 		AddMovementInput(ForwardVector,MovementVector.Y);
 		AddMovementInput(RightVector,MovementVector.X);
-		
+
 	}
 }
 
@@ -185,13 +185,13 @@ void AActionRPGCharacter::PrimaryAttack()
 {
 	//if (GEngine){GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,TEXT("Fire"));}
 	ActionComponent->StartActionByName(this,"PrimaryAttack");
-	
-	
+
+
 }
 
 void AActionRPGCharacter::BlackholeAttack()
 {
-	// black hole attack can only be started if you have rage > 20, it will cost 10 
+	// black hole attack can only be started if you have rage > 20, it will cost 10
 	/*Attribute Component -> get Rage -> Check Rage if Greater than 20 then do Start ActionByName, and subtract 10 from rage */
 	if (AttributeComponent->GetRage() > 20.0f)
 	{
@@ -200,7 +200,7 @@ void AActionRPGCharacter::BlackholeAttack()
 		AttributeComponent->ApplyRageChange(this,-10);
 
 	}
-	
+
 }
 
 void AActionRPGCharacter::Dash()
@@ -223,6 +223,7 @@ void AActionRPGCharacter::OnHealthChanged(AActor* InstigatorActor, UActionRPGAtt
 	{
 		APlayerController*PC = Cast<APlayerController>(GetController());
 		DisableInput(PC);
+		SetLifeSpan(5.0f);
 	}
 }
 
@@ -230,4 +231,3 @@ FVector AActionRPGCharacter::GetPawnViewLocation() const
 {
 	return FollowCamera->GetComponentLocation();
 }
-
