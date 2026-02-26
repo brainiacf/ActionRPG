@@ -12,17 +12,20 @@
 #include "DrawDebugHelpers.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "ActionRPGPlayerState.h"
+#include "ActionRPGSaveGame.h"
 #include "EngineUtils.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameStateBase.h"
 #include "Engine/AssetManager.h"
 #include "Logging/StructuredLog.h"
+#include "ActionRPGSaveGame.h"
 
 
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"),true,TEXT("Enable spawning bots"),ECVF_Cheat);
+
 
 AActionRPGGameModeBase::AActionRPGGameModeBase()
 {
@@ -33,7 +36,19 @@ AActionRPGGameModeBase::AActionRPGGameModeBase()
 	DesiredPowerupCount = 10;
 	RequiredPowerUpDistance = 20000.0f;
 	InitialSpawnCredits = 50;
+	
+	SlotName = "SaveGame01";
+	
 }
+
+void AActionRPGGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	LoadSaveGame();
+	
+}
+
 
 
 
@@ -74,6 +89,7 @@ void AActionRPGGameModeBase::KillAI()
 		
 	}
 }
+
 
 void AActionRPGGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result)
 {
@@ -175,6 +191,9 @@ void AActionRPGGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper*
 		DrawDebugSphere(GetWorld(),Locations[0],100,20,FColor::Red);
 	}
 }
+
+
+
 void AActionRPGGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 {
 	AActionRPGCharacter*Player = Cast<AActionRPGCharacter>(VictimActor);
@@ -205,5 +224,32 @@ void AActionRPGGameModeBase::RespawnPlayerElapsed(AController* Controller)
 	{
 		Controller->UnPossess();
 		RestartPlayer(Controller);
+	}
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void AActionRPGGameModeBase::WriteSaveGame()
+{
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame,SlotName,0);
+}
+
+void AActionRPGGameModeBase::LoadSaveGame()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SlotName,0))
+	{
+		CurrentSaveGame =  Cast<UActionRPGSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName,0)) ;
+		if (CurrentSaveGame == nullptr)
+		{
+			UE_LOG(LogTemp,Warning,TEXT("No SaveGame for ")); 
+			return; 
+		}
+		UE_LOG(LogTemp,Log,TEXT("Loaded SaveGame for "));
+	}
+	else
+	{
+		CurrentSaveGame = Cast<UActionRPGSaveGame>(UGameplayStatics::CreateSaveGameObject(UActionRPGSaveGame::StaticClass())) ; 
+		
+		UE_LOG(LogTemp,Log,TEXT("Created New Save Game "));
 	}
 }

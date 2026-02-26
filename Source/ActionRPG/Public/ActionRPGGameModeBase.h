@@ -12,6 +12,7 @@
 class UEnvQuery;
 class UCurveFloat;
 class AController;
+class UActionRPGSaveGame;
 
 UCLASS()
 class ACTIONRPG_API AActionRPGGameModeBase : public AGameModeBase
@@ -20,6 +21,10 @@ class ACTIONRPG_API AActionRPGGameModeBase : public AGameModeBase
 	AActionRPGGameModeBase();
 	
 protected:
+	//save
+	FString SlotName;
+	UPROPERTY()
+	TObjectPtr<UActionRPGSaveGame>  CurrentSaveGame;
 	//credits
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category=AI)
 	int32 InitialSpawnCredits;
@@ -67,6 +72,8 @@ protected:
 	// GM does not do begin play cause it is responsible. of calling BP on all the classes.
 public:
 	
+	void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+	
 	virtual void StartPlay() override;
 	
 	virtual void OnActorKilled(AActor*VictimActor,AActor*Killer);
@@ -76,5 +83,10 @@ public:
 	
 	UFUNCTION(Exec)
 	void KillAI();
+	
+	UFUNCTION(BlueprintCallable,Category="SaveGame")
+	void WriteSaveGame();
+	
+	void LoadSaveGame();
 	
 };
