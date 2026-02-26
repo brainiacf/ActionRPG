@@ -231,6 +231,19 @@ void AActionRPGGameModeBase::RespawnPlayerElapsed(AController* Controller)
 
 void AActionRPGGameModeBase::WriteSaveGame()
 {
+	// Iterate all players states, we don't have proper ID to match yet (requires Steam or EOS )
+	for(int32 i = 0; i < GameState->PlayerArray.Num(); i++ )
+	{
+		AActionRPGPlayerState* PS = Cast<AActionRPGPlayerState>(GameState->PlayerArray[i]);
+		if (PS)
+		{
+			 PS->SavePlayerState(CurrentSaveGame);
+			break;
+		
+		}
+	}
+	
+	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame,SlotName,0);
 }
 
@@ -252,4 +265,16 @@ void AActionRPGGameModeBase::LoadSaveGame()
 		
 		UE_LOG(LogTemp,Log,TEXT("Created New Save Game "));
 	}
+}
+
+void AActionRPGGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+	
+	AActionRPGPlayerState* PS = NewPlayer->GetPlayerState<AActionRPGPlayerState>();
+	if (PS)
+	{
+		PS->LoadPlayerState(CurrentSaveGame);
+	}
+	
 }

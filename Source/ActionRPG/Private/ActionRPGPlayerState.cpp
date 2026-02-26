@@ -1,4 +1,6 @@
 #include "ActionRPGPlayerState.h"
+
+#include "ActionRPGSaveGame.h"
 #include "Net/UnrealNetwork.h"
 
 void AActionRPGPlayerState::AddCredits(int32 Delta)
@@ -42,6 +44,23 @@ void AActionRPGPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AActionRPGPlayerState, Credits);
+}
+
+void AActionRPGPlayerState::SavePlayerState_Implementation(UActionRPGSaveGame* SaveObject)
+{
+	if (SaveObject)
+	{
+		SaveObject->Credits = Credits;
+	}
+	
+}
+
+void AActionRPGPlayerState::LoadPlayerState_Implementation(UActionRPGSaveGame* SaveObject)
+{
+	if (SaveObject)
+	{
+		Credits = SaveObject->Credits;
+	}
 }
 
 

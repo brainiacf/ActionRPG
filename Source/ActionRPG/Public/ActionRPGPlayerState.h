@@ -6,7 +6,9 @@
 #include "ActionRPGPlayerState.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged,AActionRPGPlayerState*, PlayerState,int32,NewCredits,int32,Delta);
+class UActionRPGSaveGame;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged, AActionRPGPlayerState*, PlayerState, int32,
+                                               NewCredits, int32, Delta);
 
 /**
  * 
@@ -40,6 +42,12 @@ public:
 	FOnCreditsChanged OnCreditsChanged;
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void SavePlayerState(UActionRPGSaveGame* SaveObject);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void LoadPlayerState(UActionRPGSaveGame* SaveObject );
 	
 	
 };
