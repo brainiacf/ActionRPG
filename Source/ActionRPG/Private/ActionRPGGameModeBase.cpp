@@ -9,6 +9,7 @@
 #include "EngineUtils.h"
 #include "ActionRPGAttributeComponent.h"
 #include "ActionRPGCharacter.h"
+#include "ActionRPGGameplayInterface.h"
 #include "DrawDebugHelpers.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "ActionRPGPlayerState.h"
@@ -242,7 +243,23 @@ void AActionRPGGameModeBase::WriteSaveGame()
 		
 		}
 	}
-	
+	CurrentSaveGame->SavedActors.Empty();
+	// iterate the world of actors 
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		// if have gameplay actors 
+		if (!Actor->Implements<UActionRPGGameplayInterface>())
+		{
+			continue;
+		}
+		
+		FActorSaveData ActorData;
+		ActorData.ActorName = Actor->GetName();
+		ActorData.Transform = Actor->GetActorTransform();
+		
+		CurrentSaveGame->SavedActors.Add(ActorData);
+	}
 	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame,SlotName,0);
 }
@@ -258,6 +275,24 @@ void AActionRPGGameModeBase::LoadSaveGame()
 			return; 
 		}
 		UE_LOG(LogTemp,Log,TEXT("Loaded SaveGame for "));
+		
+		for (FActorIterator It(GetWorld()); It; ++It)
+		{
+			AActor* Actor = *It;
+			// if have gameplay actors 
+			if (!Actor->Implements<UActionRPGGameplayInterface>())
+			{
+				continue;
+			}
+			for (FActorSaveData ActorData : CurrentSaveGame->SavedActors)
+			{
+				if (ActorData.ActorName == Actor->GetName())
+				{
+					Actor->SetActorTransform(ActorData.Transform);
+					break;
+				}
+			}
+		}
 	}
 	else
 	{
@@ -265,6 +300,7 @@ void AActionRPGGameModeBase::LoadSaveGame()
 		
 		UE_LOG(LogTemp,Log,TEXT("Created New Save Game "));
 	}
+	
 }
 
 void AActionRPGGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)

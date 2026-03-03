@@ -5,6 +5,25 @@
 #include "GameFramework/SaveGame.h"
 #include "ActionRPGSaveGame.generated.h"
 
+
+USTRUCT()
+struct FActorSaveData
+{
+	GENERATED_BODY()
+	
+public:
+	/*to identify the actor*/
+	UPROPERTY()
+	FString ActorName; 
+	
+	UPROPERTY()
+	FTransform Transform;
+	
+};
+
+
+
+
 UCLASS()
 class ACTIONRPG_API UActionRPGSaveGame : public USaveGame
 {
@@ -15,6 +34,7 @@ public:
 	UPROPERTY()
 	int32 Credits;
 	
-	
+	UPROPERTY()
+	TArray<FActorSaveData> SavedActors;
 	
 };
