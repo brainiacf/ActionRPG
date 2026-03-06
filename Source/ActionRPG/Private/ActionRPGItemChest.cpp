@@ -34,6 +34,11 @@ void AActionRPGItemChest::Interact_Implementation(APawn* InstigatorPawn)
 	OnRep_LidOpened();// it runs auto on clients but for server you'll have to call it 
 }
 
+void AActionRPGItemChest::OnActorLoaded_Implementation()
+{
+	OnRep_LidOpened();
+}
+
 
 void AActionRPGItemChest::OnRep_LidOpened() 
 {

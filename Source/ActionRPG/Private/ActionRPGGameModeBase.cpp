@@ -304,7 +304,7 @@ void AActionRPGGameModeBase::LoadSaveGame()
 					Ar.ArIsSaveGame = true;
 					Actor->Serialize(Ar);
 					
-					
+					IActionRPGGameplayInterface::Execute_OnActorLoaded(Actor);
 					break;
 				}
 			}

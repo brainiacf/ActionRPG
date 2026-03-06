@@ -20,7 +20,7 @@ public:
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
-
+	void OnActorLoaded_Implementation() override;
 
 protected:
 	UPROPERTY(EditAnywhere)
