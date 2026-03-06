@@ -29,7 +29,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category=Animation)
 	TObjectPtr<UCurveFloat> LidAnimCurve;
 
-	UPROPERTY(ReplicatedUsing="OnRep_LidOpened",BlueprintReadOnly) // Repnotify
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened",BlueprintReadOnly,SaveGame) // Repnotify
 	bool bLidOpened;
 
 	UFUNCTION()

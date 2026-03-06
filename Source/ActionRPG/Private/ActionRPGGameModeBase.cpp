@@ -21,8 +21,7 @@
 #include "Engine/AssetManager.h"
 #include "Logging/StructuredLog.h"
 #include "ActionRPGSaveGame.h"
-
-
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"),true,TEXT("Enable spawning bots"),ECVF_Cheat);
@@ -258,7 +257,17 @@ void AActionRPGGameModeBase::WriteSaveGame()
 		ActorData.ActorName = Actor->GetName();
 		ActorData.Transform = Actor->GetActorTransform();
 		
+		FMemoryWriter MemoryWriter ( ActorData.ByteData ); 
+		
+		FObjectAndNameAsStringProxyArchive Ar (MemoryWriter,true);
+		
+		//Find only variables with UPROPERTY(SaveGame)
+		Ar.ArIsSaveGame = true;
+		
+		Actor->Serialize(Ar);
+		
 		CurrentSaveGame->SavedActors.Add(ActorData);
+	
 	}
 	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame,SlotName,0);
@@ -289,6 +298,13 @@ void AActionRPGGameModeBase::LoadSaveGame()
 				if (ActorData.ActorName == Actor->GetName())
 				{
 					Actor->SetActorTransform(ActorData.Transform);
+					
+					FMemoryReader MemReader(ActorData.ByteData);
+					FObjectAndNameAsStringProxyArchive Ar(MemReader,true);
+					Ar.ArIsSaveGame = true;
+					Actor->Serialize(Ar);
+					
+					
 					break;
 				}
 			}
