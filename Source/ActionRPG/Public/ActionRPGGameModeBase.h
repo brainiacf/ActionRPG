@@ -13,6 +13,39 @@ class UEnvQuery;
 class UCurveFloat;
 class AController;
 class UActionRPGSaveGame;
+class UDataTable;
+
+/*Datatable Row for Spawning monsters in game mode.*/
+USTRUCT(BlueprintType)
+struct FMonsterInfoRow : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	
+	FMonsterInfoRow()
+	{
+		Weight = 1.0f;
+		SpawnCost = 5.0f;
+		KillReward = 20.0f;
+		
+	}
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<AActor> MonsterClass;
+	
+	/*Relative chance to pick this monster*/
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	float Weight;
+	
+	/*points required by Gamemode to spawn this unit*/
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	float SpawnCost;
+	
+	/*Amount of Credits awarded to Killer of this unit*/
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	float KillReward;
+};
+
 
 UCLASS()
 class ACTIONRPG_API AActionRPGGameModeBase : public AGameModeBase
@@ -25,6 +58,9 @@ protected:
 	FString SlotName;
 	UPROPERTY()
 	TObjectPtr<UActionRPGSaveGame>  CurrentSaveGame;
+	
+	UPROPERTY(EditDefaultsOnly,Category=AI)
+	TObjectPtr<UDataTable>MonsterTable;
 	//credits
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category=AI)
 	int32 InitialSpawnCredits;

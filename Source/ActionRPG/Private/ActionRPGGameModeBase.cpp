@@ -183,12 +183,25 @@ void AActionRPGGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper*
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Query Incomplete"));
+		return;
 	}
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 	if (Locations.IsValidIndex(0))
 	{
-		GetWorld()->SpawnActor<AActor>(MinionClass,Locations[0],FRotator::ZeroRotator);
-		DrawDebugSphere(GetWorld(),Locations[0],100,20,FColor::Red);
+		if (MonsterTable)
+		{
+			TArray<FMonsterInfoRow*> Rows;
+			MonsterTable->GetAllRows("|",Rows);
+			//Get Random Enemy
+			int32 RandomIndex = FMath::RandRange(0,Rows.Num()-1);
+			FMonsterInfoRow* SelectedRow = Rows[RandomIndex];
+			
+			
+			
+			GetWorld()->SpawnActor<AActor>(SelectedRow->MonsterClass,Locations[0],FRotator::ZeroRotator);
+			DrawDebugSphere(GetWorld(),Locations[0],100,20,FColor::Red);
+		}
+		
 	}
 }
 
