@@ -10,6 +10,7 @@
 #include "ActionRPGAttributeComponent.h"
 #include "ActionRPGCharacter.h"
 #include "ActionRPGGameplayInterface.h"
+#include "ActionRPGMonsterData.h"
 #include "DrawDebugHelpers.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "ActionRPGPlayerState.h"
@@ -22,6 +23,7 @@
 #include "Logging/StructuredLog.h"
 #include "ActionRPGSaveGame.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "ActionRPGMonsterData.h"
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"),true,TEXT("Enable spawning bots"),ECVF_Cheat);
@@ -198,7 +200,7 @@ void AActionRPGGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper*
 			
 			
 			
-			GetWorld()->SpawnActor<AActor>(SelectedRow->MonsterClass,Locations[0],FRotator::ZeroRotator);
+			GetWorld()->SpawnActor<AActor>(SelectedRow->MonsterData->MonsterClass,Locations[0],FRotator::ZeroRotator);
 			DrawDebugSphere(GetWorld(),Locations[0],100,20,FColor::Red);
 		}
 		

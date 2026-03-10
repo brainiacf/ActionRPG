@@ -9,6 +9,7 @@
 
 #include "ActionRPGGameModeBase.generated.h"
 
+class UActionRPGMonsterData;
 class UEnvQuery;
 class UCurveFloat;
 class AController;
@@ -30,8 +31,12 @@ public:
 		
 	}
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TSubclassOf<AActor> MonsterClass;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	UActionRPGMonsterData * MonsterData;
+	
+	
+	/*UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<AActor> MonsterClass;*/
 	
 	/*Relative chance to pick this monster*/
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
